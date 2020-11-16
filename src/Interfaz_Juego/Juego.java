@@ -55,8 +55,6 @@ public class Juego extends JPanel{
         super.paint(g);
         p.paint(g);
         
-        tab.paint(g);
-        
         
     }
 
