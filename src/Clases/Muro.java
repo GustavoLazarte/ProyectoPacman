@@ -12,20 +12,30 @@ import java.awt.Graphics;
  *
  * @author Miguel
  */
-public class Comida_Normal extends Comida {
+public class Muro extends ObjetoDeJuego {
 
-    private static final int VALOR = 20;
-
-    public Comida_Normal() {
-        super(VALOR);
-    }
+    private int i;
+    private int j;
 
     @Override
     void paint(Graphics g) {
-        g.setColor(Color.red);
+        g.setColor(Color.WHITE);
         g.fillRect(j * 20, i * 20, 20, 20);
         g.setColor(Color.blue);
-        g.drawOval(j * 20, i * 20, 10, 10);
+        g.drawRect(j * 20, i * 20, 20, 20);
     }
 
+    public void setUbicacion(int i, int j){
+        setI(i);
+        setJ(j);
+    }
+    public void setI(int i) {
+        this.i = i;
+    }
+
+    public void setJ(int j) {
+        this.j = j;
+    }
+    
+    
 }

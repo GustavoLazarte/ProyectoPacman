@@ -18,31 +18,46 @@ import javax.imageio.ImageIO;
  * @author Miguel
  */
 public class Tablero extends ObjetoDeJuego{
-    public static int[][] elTablero;
+    public static ObjetoDeJuego[][] elTablero;
     
     public Tablero() {
         elTablero = generarTablero();
     }
 
     public void paint(Graphics g) {
+        
         for (int i = 0; i < elTablero.length; i++) {
             for (int j = 0; j < elTablero[i].length; j++) {
-                if (elTablero[i][j] == 1) {
-                    g.setColor(Color.WHITE);
-                    g.fillRect(j * 20, i * 20, 20, 20);
-                    g.setColor(Color.blue);
-                    g.drawRect(j * 20, i * 20, 20, 20);
-                }else if(elTablero[i][j]== 7){
-                    g.setColor(Color.red);
-                    g.fillRect(j * 20, i * 20, 20, 20);
-                    g.setColor(Color.blue);
-                    g.drawOval(j * 20, i * 20, 10, 10);
+                if (elTablero[i][j] instanceof Muro) {
+                    Muro aux= (Muro)(elTablero[i][j]);
+                    aux.setUbicacion(i, j);
+                    aux.paint(g);
+                }else if(elTablero[i][j] instanceof Comida_Normal){
+                    Comida_Normal aux = (Comida_Normal)(elTablero[i][j]);
+                    aux.setUbicacion(i, j);
+                    aux.paint(g);
                 }
             }
         }
     }
+    
+    private ObjetoDeJuego[][] generarTablero(){
+        int[][] t= generarBaseTablero();
+        elTablero = new ObjetoDeJuego[t.length][t[0].length];
+        for (int i = 0; i < t.length; i++) {
+            for (int j = 0; j < t[i].length; j++) {
+                if (t[i][j] == 1) {
+                    elTablero[i][j]= new Muro();
+                }else if(t[i][j] == 7){
+                    elTablero[i][j] = new Comida_Normal();
+                }
+            }
+        }
+        
+        return elTablero;
+    }
 
-    private  int[][] generarTablero() {
+    private  int[][] generarBaseTablero() {
         int[][] t = {
                      {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
                      {1,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -78,7 +93,7 @@ public class Tablero extends ObjetoDeJuego{
         return t;
     }
 
-    public static int[][] getElTablero() {
+    public static ObjetoDeJuego[][] getElTablero() {
         return elTablero;
     }
     

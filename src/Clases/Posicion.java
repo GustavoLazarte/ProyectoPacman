@@ -17,7 +17,7 @@ public class Posicion {
 
     private int x, y;
     int aumento = 20;
-    private int[][] lab;
+    private ObjetoDeJuego[][] lab;
 
     public Posicion(int x, int y) {
         this.x = x;
@@ -51,10 +51,7 @@ public class Posicion {
 
     public boolean sePuedeMoverDer(int maxX) {
         if ((x + 20) + aumento <= maxX) {
-            if (lab[(y / 20)][(x / 20) + 1] != 1) {
-                if(lab[(y / 20)][(x / 20) + 1] == 7){
-                    
-                }
+            if (!(lab[(y / 20)][(x / 20) + 1] instanceof Muro)) {                
                 return true;
             }
         }
@@ -63,7 +60,7 @@ public class Posicion {
 
     public boolean sePuedeMoverIzq(int minX) {
         if (x - aumento >= minX) {
-            if (lab[(y / 20)][(x / 20) - 1] != 1) {
+            if (!(lab[(y / 20)][(x / 20) - 1] instanceof Muro)) {
                 return true;
             }
         }
@@ -72,7 +69,7 @@ public class Posicion {
 
     public boolean sePuedeMoverAba(int maxY) {
         if ((y + 20) + aumento <= maxY) {
-            if (lab[(y / 20) + 1][x / 20] != 1) {
+            if (!(lab[(y / 20) + 1][x / 20] instanceof Muro)) {
                 return true;
             }
         }
@@ -81,7 +78,7 @@ public class Posicion {
 
     public boolean sePuedeMoverArri(int minY) {
         if (y - aumento >= minY) {
-            if (lab[(y / 20) - 1][x / 20] != 1) {
+            if (!(lab[(y / 20) - 1][x / 20] instanceof Muro)) {
                 return true;
             }
         }

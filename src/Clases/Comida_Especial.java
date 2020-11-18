@@ -13,8 +13,8 @@ import java.awt.Graphics;
  */
 public class Comida_Especial extends Comida{
     private static final int VALOR = 50;
-    public Comida_Especial(Posicion posicion, int valor) {
-        super(posicion, valor);
+    public Comida_Especial(int valor) {
+        super(valor);
     }
 
     @Override

@@ -5,6 +5,8 @@
  */
 package Interfaz_Juego;
 
+import Clases.Comida_Normal;
+import Clases.Muro;
 import Clases.Pacman;
 import Clases.Posicion;
 import Clases.Tablero;
@@ -132,8 +134,8 @@ public class Juego extends JPanel {
     private void comer(){
         int pacx = p.getPosicion().getX();
         int pacy = p.getPosicion().getY();
-        if(tab.elTablero[pacy/20][pacx/20]== 7){
-            tab.elTablero[pacy/20][pacx/20]= 0;
+        if(tab.getElTablero()[pacy/20][pacx/20] instanceof Comida_Normal){
+            tab.getElTablero()[pacy/20][pacx/20]= null;
         }
     }
 }

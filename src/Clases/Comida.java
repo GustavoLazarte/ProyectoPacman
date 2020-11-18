@@ -5,28 +5,45 @@
  */
 package Clases;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 /**
  *
  * @author Miguel
  */
 public abstract class Comida extends ObjetoDeJuego{
-    protected Posicion posicion;
     protected int valor;
 
-    public Comida(Posicion posicion, int valor) {
-        this.posicion = posicion;
+    protected int i;
+    protected int j;
+    
+    public Comida(int valor) {
         this.valor = valor;
+    }
+
+    @Override
+    void paint(Graphics g) {
+        
+    }
+
+    public void setUbicacion(int i, int j){
+        setI(i);
+        setJ(j);
+    }
+    public void setI(int i) {
+        this.i = i;
+    }
+
+    public void setJ(int j) {
+        this.j = j;
     }
     
     
-
     public int getValor() {
         return valor;
     }
 
-    public Posicion getPosicion() {
-        return posicion;
-    }
     
     
 }
