@@ -17,62 +17,75 @@ public class Posicion {
 
     private int x, y;
     int aumento = 20;
+    private int[][] lab;
 
     public Posicion(int x, int y) {
         this.x = x;
         this.y = y;
+        lab = Tablero.elTablero;
     }
 
     public void moverArriba(int minY) {
-        int[][] lab = Tablero.elTablero;
-        if (y - aumento >= minY) {
-            try {
-                if (lab[(y / 20) - 1][x / 20] != 1) {
-                    y = y - aumento;
-                }
-            } catch (Exception e) {
-            }
-
+        if(sePuedeMoverArri(minY)){
+            y = y - aumento;
         }
     }
 
     public void moverAbajo(int maxY) {
-        int[][] lab = Tablero.elTablero;
-        if ((y + 20) + aumento <= maxY) {
-            try {
-                if (lab[(y / 20) + 1][x / 20] != 1) {
-                    y = y + aumento;
-                }
-            } catch (Exception e) {
-            }
-
+        if(sePuedeMoverAba(maxY)){
+            y = y + aumento;
         }
     }
 
     public void moverIzquierda(int minX) {
-        int[][] lab = Tablero.elTablero;
-        if (x - aumento >= minX) {
-            try {
-                if (lab[(y / 20)][(x / 20) - 1] != 1) {
-                    x = x - aumento;
-                }
-            } catch (Exception e) {
-            }
-
+        if(sePuedeMoverIzq(minX)){
+            x = x - aumento;
         }
     }
 
     public void moverDerecha(int maxX) {
-        int[][] lab = Tablero.elTablero;
-        if ((x + 20) + aumento <= maxX) {
-            try {
-                if (lab[(y / 20)][(x / 20) + 1] != 1) {
-                    x = x + aumento;
-                }
-            } catch (Exception e) {
-            }
-
+        if(sePuedeMoverDer(maxX)){
+            x = x + aumento;
         }
+    }
+
+    public boolean sePuedeMoverDer(int maxX) {
+        if ((x + 20) + aumento <= maxX) {
+            if (lab[(y / 20)][(x / 20) + 1] != 1) {
+                if(lab[(y / 20)][(x / 20) + 1] == 7){
+                    
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean sePuedeMoverIzq(int minX) {
+        if (x - aumento >= minX) {
+            if (lab[(y / 20)][(x / 20) - 1] != 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean sePuedeMoverAba(int maxY) {
+        if ((y + 20) + aumento <= maxY) {
+            if (lab[(y / 20) + 1][x / 20] != 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean sePuedeMoverArri(int minY) {
+        if (y - aumento >= minY) {
+            if (lab[(y / 20) - 1][x / 20] != 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getX() {
@@ -82,9 +95,9 @@ public class Posicion {
     public int getY() {
         return y;
     }
-    
-    public String toString(){
-        return "posicion en x: "+ getX()+" posicion en  y: "+getY();
+
+    public String toString() {
+        return "posicion en x: " + getX() + " posicion en  y: " + getY();
     }
 
 }

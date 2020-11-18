@@ -9,7 +9,7 @@ package Clases;
  *
  * @author Miguel
  */
-public class Comida {
+public abstract class Comida extends ObjetoDeJuego{
     protected Posicion posicion;
     protected int valor;
 

@@ -33,7 +33,7 @@ public class VentanaPrincipal extends JFrame {
         j.setVisible(true);
 //        inicio = new Panel_Inicio();
         setLayout(null);
-        setBounds(350, 125, 550, 550);
+        setBounds(350, 125, 626, 626);
         add(j);
 //        add(inicio);
 //        add(menu);

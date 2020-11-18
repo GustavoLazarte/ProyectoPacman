@@ -15,7 +15,7 @@ import javax.swing.JLabel;
  *
  * @author Miguel
  */
-public class Pacman {
+public class Pacman extends ObjetoDeJuego{
     private int vida;
     private int puntos;
     private Posicion posicion;
