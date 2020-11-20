@@ -5,28 +5,23 @@
  */
 package Clases;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 /**
  *
  * @author Miguel
  */
-public class Comida_Normal extends Comida {
+public class Portal extends ObjetoDeJuego{
 
-    private static final int VALOR = 20;
-
-    public Comida_Normal() {
-        super(VALOR);
+    public Portal() {
         ubic= new Ubicacion();
     }
+    
+    
 
     @Override
     void paint(Graphics g) {
-        g.setColor(Color.red);
-        g.fillRect(ubic.y, ubic.x, 20, 20);
-        g.setColor(Color.blue);
-        g.drawOval(ubic.y, ubic.x, 10, 10);
+        
     }
 
     @Override
@@ -34,6 +29,4 @@ public class Comida_Normal extends Comida {
         ubic.setUbicacion(x, y);
     }
     
-    
-
 }

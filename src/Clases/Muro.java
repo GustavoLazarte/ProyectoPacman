@@ -14,28 +14,25 @@ import java.awt.Graphics;
  */
 public class Muro extends ObjetoDeJuego {
 
-    private int i;
-    private int j;
+    public Muro() {
+        ubic = new Ubicacion();
+    }
+    
+    
 
     @Override
     void paint(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillRect(j * 20, i * 20, 20, 20);
+        g.fillRect(ubic.y, ubic.x, 20, 20);
         g.setColor(Color.blue);
-        g.drawRect(j * 20, i * 20, 20, 20);
+        g.drawRect(ubic.y, ubic.x, 20, 20);
     }
 
-    public void setUbicacion(int i, int j){
-        setI(i);
-        setJ(j);
-    }
-    public void setI(int i) {
-        this.i = i;
+    @Override
+    void setUbicacion(int x, int y) {
+        ubic.setUbicacion(x, y);
     }
 
-    public void setJ(int j) {
-        this.j = j;
-    }
     
     
 }

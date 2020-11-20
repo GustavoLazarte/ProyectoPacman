@@ -18,71 +18,131 @@ public class Posicion {
     private int x, y;
     int aumento = 20;
     private ObjetoDeJuego[][] lab;
+    private Rectangle area;
 
-    public Posicion(int x, int y) {
+    public Posicion(int x, int y, int maxX, int maxY) {
         this.x = x;
         this.y = y;
         lab = Tablero.elTablero;
+        System.out.println(lab[9][0] instanceof Portal);
+        area = new Rectangle(0, 0, maxX, maxY);
     }
 
-    public void moverArriba(int minY) {
-        if(sePuedeMoverArri(minY)){
+    public void moverArriba() {
+        if (sePuedeMoverArri()) {
             y = y - aumento;
         }
     }
 
-    public void moverAbajo(int maxY) {
-        if(sePuedeMoverAba(maxY)){
+    public void moverAbajo() {
+        if (sePuedeMoverAba()) {
             y = y + aumento;
         }
     }
 
-    public void moverIzquierda(int minX) {
-        if(sePuedeMoverIzq(minX)){
+    public void moverIzquierda() {
+        if (sePuedeMoverIzq()) {
             x = x - aumento;
         }
     }
 
-    public void moverDerecha(int maxX) {
-        if(sePuedeMoverDer(maxX)){
+    public void moverDerecha() {
+        if (sePuedeMoverDer()) {
             x = x + aumento;
         }
     }
 
-    public boolean sePuedeMoverDer(int maxX) {
-        if ((x + 20) + aumento <= maxX) {
-            if (!(lab[(y / 20)][(x / 20) + 1] instanceof Muro)) {                
-                return true;
+    public boolean sePuedeMoverDer() {
+        //int maxX = (int) (area.getMaxX());
+        //System.out.println(lab[0].length);
+        try {
+            if (estaAdentroX()) {
+                if (!(lab[(y / 20)][(x / 20) + 1] instanceof Muro)) {
+                    return true;
+                }
+            } else {
+                if (lab[(y / 20)][(x / 20)] instanceof Portal) {
+                    x= lab[y/20][0].getUbic().getY();
+                    //System.out.println(x);
+                    return true;
+                }
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println(x + " " + y + " derecha");
         }
         return false;
     }
 
-    public boolean sePuedeMoverIzq(int minX) {
-        if (x - aumento >= minX) {
-            if (!(lab[(y / 20)][(x / 20) - 1] instanceof Muro)) {
-                return true;
+    public boolean sePuedeMoverIzq() {
+        //int minX = (int) (area.getMinX());
+        try {
+            if (estaAdentroX() ) {
+                if (!(lab[(y / 20)][(x / 20) - 1] instanceof Muro)) {
+                    return true;
+                }
+            } else {
+                if (lab[(y / 20)][(x / 20)] instanceof Portal) {
+                    x = lab[y/20][lab[y/20].length-1].getUbic().getY();
+                    //System.out.println(x);
+                    return true;
+                }
             }
+        } catch (Exception e) {
+            System.out.println(x + " " + y + " izquierda");
         }
         return false;
     }
 
-    public boolean sePuedeMoverAba(int maxY) {
-        if ((y + 20) + aumento <= maxY) {
-            if (!(lab[(y / 20) + 1][x / 20] instanceof Muro)) {
-                return true;
+    public boolean sePuedeMoverAba() {
+        //int maxY = (int) (area.getMaxY());
+        try {
+            if (estaAdentroY() ) {
+                if (!(lab[(y / 20) + 1][x / 20] instanceof Muro)) {
+                    return true;
+                }
+            }else{
+                if (lab[(y / 20)][(x / 20)] instanceof Portal) {
+                    y = lab[0][x/20].getUbic().getX();
+                    
+                    return true;
+                }else if( ((y+aumento)+aumento/20) < lab.length ){
+                    return true;
+                }
             }
+        } catch (Exception e) {
+            System.out.println(x + " " + y + " abajo");
         }
         return false;
     }
 
-    public boolean sePuedeMoverArri(int minY) {
-        if (y - aumento >= minY) {
-            if (!(lab[(y / 20) - 1][x / 20] instanceof Muro)) {
-                return true;
+    public boolean sePuedeMoverArri() {
+        //int minY = (int) (area.getMinY());
+        try {
+            if (estaAdentroY() ) {
+                if (!(lab[(y / 20) - 1][x / 20] instanceof Muro)) {
+                    return true;
+                }
+            }else{
+                if (lab[(y / 20)][(x / 20)] instanceof Portal) {
+                    y = lab[lab[x/20].length-1][x/20].getUbic().getX();
+                    
+                    return true;
+                }else if(((y - aumento)/ 20) > 0){
+                    return true;
+                }
             }
+        } catch (Exception e) {
+            System.out.println(x + " " + y + " arriba");
         }
         return false;
+    }
+
+    public boolean estaAdentroX() {
+        return (x + aumento < area.getMaxX() && x > area.getMinX()) ;
+    }
+    
+    public boolean estaAdentroY(){
+        return ((y + aumento < area.getMaxY()) && y > area.getMinY());
     }
 
     public int getX() {

@@ -11,7 +11,7 @@ import java.awt.Graphics;
  *
  * @author Miguel
  */
-public class Fantasma extends ObjetoDeJuego{
+public class Fantasma{
     private boolean comible;
     private int valor;
     private Posicion posicion;
@@ -35,10 +35,5 @@ public class Fantasma extends ObjetoDeJuego{
         return posicion;
     }
 
-    @Override
-    void paint(Graphics g) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
     
 }

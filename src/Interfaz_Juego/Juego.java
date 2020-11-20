@@ -19,6 +19,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,9 +37,9 @@ public class Juego extends JPanel {
     private Pacman p;
     private Timer timer;
     private boolean arriba = false,
-            abajo = false,
-            izq = false,
-            der = true;
+                    abajo = false,
+                    izq = false,
+                    der = true;
 
     public Juego() {
         setLayout(null);
@@ -45,11 +47,15 @@ public class Juego extends JPanel {
         LineBorder borde = new LineBorder(Color.RED, 1);
         setBorder(borde);
         setBackground(new Color(12, 20, 20));
-        setBounds(10, 10, 521, 561);
-        ImageIcon img = new ImageIcon("OIP.jpg");
-        
+        setBounds(20, 0, 521, 561);
+        ArrayList<ImageIcon> imagenes = new ArrayList<>();
+        imagenes.add(new ImageIcon("PacmanDer.png"));
+        imagenes.add(new ImageIcon("PacmanIzq.png"));
+        imagenes.add(new ImageIcon("PacmanArri.png"));
+        imagenes.add(new ImageIcon("PacmanAba.png"));
+        imagenes.add(new ImageIcon("pacmanCerrado.png"));
         tab = new Tablero();
-        p = new Pacman(img, new Posicion(260, 300));
+        p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1));
 
         darAccion();
         setFocusable(true);
@@ -57,8 +63,8 @@ public class Juego extends JPanel {
     }
 
     public void paint(Graphics g) {
+
         super.paint(g);
-        
         tab.paint(g);
         p.paint(g);
 
@@ -66,17 +72,17 @@ public class Juego extends JPanel {
 
     public void darAccion() {
 
-        timer = new Timer(125, new ActionListener() {
+        timer = new Timer(140, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (arriba) {
-                    p.getPosicion().moverArriba(0);
+                    p.getPosicion().moverArriba();
                 } else if (abajo) {
-                    p.getPosicion().moverAbajo(getHeight());
+                    p.getPosicion().moverAbajo();
                 } else if (der) {
-                    p.getPosicion().moverDerecha(getWidth());
+                    p.getPosicion().moverDerecha();
                 } else if (izq) {
-                    p.getPosicion().moverIzquierda(0);
+                    p.getPosicion().moverIzquierda();
                 }
                 comer();
                 //System.out.println(p.getPosicion().toString());
@@ -93,33 +99,37 @@ public class Juego extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    if (p.getPosicion().sePuedeMoverArri(0)) {
+                    if (p.getPosicion().sePuedeMoverArri()) {
                         arriba = true;
                         abajo = false;
                         izq = false;
                         der = false;
+                        p.setImg(2);
                     }
                     //repaint();
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    if (p.getPosicion().sePuedeMoverAba(getHeight())) {
+                    if (p.getPosicion().sePuedeMoverAba()) {
                         arriba = false;
                         abajo = true;
                         izq = false;
                         der = false;
+                        p.setImg(3);
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    if (p.getPosicion().sePuedeMoverIzq(0)) {
+                    if (p.getPosicion().sePuedeMoverIzq()) {
                         arriba = false;
                         abajo = false;
                         izq = true;
                         der = false;
+                        p.setImg(1);
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    if (p.getPosicion().sePuedeMoverDer(getWidth())) {
+                    if (p.getPosicion().sePuedeMoverDer()) {
                         arriba = false;
                         abajo = false;
                         izq = false;
                         der = true;
+                        p.setImg(0);
                     }
                 }
 
@@ -131,11 +141,12 @@ public class Juego extends JPanel {
             }
         });
     }
-    private void comer(){
+
+    private void comer() {
         int pacx = p.getPosicion().getX();
         int pacy = p.getPosicion().getY();
-        if(tab.getElTablero()[pacy/20][pacx/20] instanceof Comida_Normal){
-            tab.getElTablero()[pacy/20][pacx/20]= null;
+        if (tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida_Normal) {
+            tab.getElTablero()[pacy / 20][pacx / 20] = null;
         }
     }
 }

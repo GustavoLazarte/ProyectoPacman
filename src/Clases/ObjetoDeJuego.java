@@ -12,5 +12,13 @@ import java.awt.Graphics;
  * @author Miguel
  */
 public abstract class ObjetoDeJuego {
+    protected Ubicacion ubic;
     abstract void paint(Graphics g);
+    abstract void setUbicacion(int x, int y);
+
+    public Ubicacion getUbic() {
+        return ubic;
+    }
+    
+    
 }

@@ -12,6 +12,7 @@ public class Comida_Bonus extends Comida{
 
     public Comida_Bonus(Posicion posicion, int valor) {
         super(valor);
+        ubic= new Ubicacion();
     }
     
 
@@ -19,6 +20,11 @@ public class Comida_Bonus extends Comida{
     @Override
     void paint(Graphics g) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    void setUbicacion(int x, int y) {
+        ubic.setUbicacion(x, y);
     }
     
 }
