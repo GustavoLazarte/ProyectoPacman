@@ -14,17 +14,24 @@
         <group>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Interfaz_Juego/Juego.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Fantasma.java</file>
+            <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Ventana/VentanaPrincipal.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Tablero.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/ObjetoDeJuego.java</file>
+            <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Herramientas/BotonesPersonalizados.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Comida_Especial.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Comida_Normal.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Comida_Bonus.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Ubicacion.java</file>
+            <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Interfaz_MenuJuego/Menu.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/MiPanel.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Portal.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Posicion.java</file>
+            <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Interfaz_PanelInicio/Panel_Inicio.java</file>
+            <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Eventos/EfectoDeMouse.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Main.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Comida.java</file>
+            <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Herramientas/Controles.java</file>
+            <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Interfaz_MenuJuego/BotonesDeMenu.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Muro.java</file>
             <file>file:/E:/Cosas%20de%20Gustavo/NetBeansProjects/ProyectoPacmanYo/src/Clases/Pacman.java</file>
         </group>

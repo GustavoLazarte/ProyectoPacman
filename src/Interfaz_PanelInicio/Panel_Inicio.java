@@ -33,6 +33,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -47,11 +48,14 @@ public class Panel_Inicio extends JPanel{
     public Panel_Inicio() {
         setLayout(null);
         setOpaque(true);
+        
         setBounds(0,0,500, 500);
         agregarTitulo();
         agregarBotones();
         agregarMusiquita();
-        agregarFondo();    
+        //setBorder(new LineBorder(Color.red, 1));
+        agregarFondo();   
+        
         
     }
     
@@ -97,7 +101,6 @@ public class Panel_Inicio extends JPanel{
         titulo = new JLabel(ico);
         //titulo.setOpaque(true);
         //titulo.setBackground(Color.red);
-        System.out.println(ico.getIconHeight());
         titulo.setBounds(x, y,ico.getIconWidth(),ico.getIconHeight());
         
         add(titulo);

@@ -24,7 +24,7 @@ public class EfectoDeMouse implements MouseListener {
 
     public EfectoDeMouse(String direccion,String direccion2, JButton boton) {
         this.direccion = direccion;
-        System.out.println("LA dir es"+direccion);
+        //System.out.println("LA dir es"+direccion);
         this.direccion2 = direccion2;
         this.boton = boton;
     }

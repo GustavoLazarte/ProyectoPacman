@@ -40,7 +40,7 @@ public class BotonesDeMenu extends JPanel {
 
     private void agregarBotonIniciar() {
         int x = ((getWidth()/2)- (BotonesPersonalizados.ancho/2));
-        System.out.println(x);
+        //System.out.println(x);
         int y = (int)(getHeight()*0.375)-75;
         ImageIcon imgico = new ImageIcon("Jugar.png");
         ImageIcon imgico2 = new ImageIcon("Jugar Claro.png");

@@ -27,6 +27,7 @@ public class Comida_Normal extends Comida {
         g.fillRect(ubic.y, ubic.x, 20, 20);
         g.setColor(Color.blue);
         g.drawOval(ubic.y, ubic.x, 10, 10);
+        
     }
 
     @Override

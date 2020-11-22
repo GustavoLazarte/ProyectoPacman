@@ -34,12 +34,13 @@ import javax.swing.border.LineBorder;
 public class Juego extends JPanel {
 
     private Tablero tab;
-    private Pacman p;
+    private Pacman p,p2;
     private Timer timer;
     private boolean arriba = false,
-                    abajo = false,
-                    izq = false,
-                    der = true;
+            abajo = false,
+            izq = false,
+            der = true;
+    private boolean estado;
 
     public Juego() {
         setLayout(null);
@@ -47,7 +48,8 @@ public class Juego extends JPanel {
         LineBorder borde = new LineBorder(Color.RED, 1);
         setBorder(borde);
         setBackground(new Color(12, 20, 20));
-        setBounds(20, 0, 521, 561);
+        setBounds(0, 0, 481, 561);
+        estado = false;
         ArrayList<ImageIcon> imagenes = new ArrayList<>();
         imagenes.add(new ImageIcon("PacmanDer.png"));
         imagenes.add(new ImageIcon("PacmanIzq.png"));
@@ -55,10 +57,15 @@ public class Juego extends JPanel {
         imagenes.add(new ImageIcon("PacmanAba.png"));
         imagenes.add(new ImageIcon("pacmanCerrado.png"));
         tab = new Tablero();
-        p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1));
-
+        p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1),1);
+        p2 = new Pacman(imagenes, new Posicion(240, 280, getWidth() - 1, getHeight() - 1), 2);
+        p2.getControles().setIzq();
         darAccion();
         setFocusable(true);
+
+    }
+
+    private void iniciarJuego() {
 
     }
 
@@ -67,29 +74,46 @@ public class Juego extends JPanel {
         super.paint(g);
         tab.paint(g);
         p.paint(g);
+        p2.paint(g);
 
     }
 
     public void darAccion() {
 
-        timer = new Timer(140, new ActionListener() {
+        timer = new Timer(145, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (arriba) {
-                    p.getPosicion().moverArriba();
-                } else if (abajo) {
-                    p.getPosicion().moverAbajo();
-                } else if (der) {
-                    p.getPosicion().moverDerecha();
-                } else if (izq) {
-                    p.getPosicion().moverIzquierda();
+                if (estado) {
+                    if (p.getControles().isArriba()) {
+                        p.getPosicion().moverArriba();
+                    } else if (p.getControles().isAbajo()) {
+                        p.getPosicion().moverAbajo();
+                    } else if (p.getControles().isDer()) {
+                        p.getPosicion().moverDerecha();
+                    } else if (p.getControles().isIzq()) {
+                        p.getPosicion().moverIzquierda();
+                    }
+                    
+                    if (p2.getControles().isArriba()) {
+                        p2.getPosicion().moverArriba();
+                    } else if (p2.getControles().isAbajo()) {
+                        p2.getPosicion().moverAbajo();
+                    } else if (p2.getControles().isDer()) {
+                        p2.getPosicion().moverDerecha();
+                    } else if (p2.getControles().isIzq()) {
+                        p2.getPosicion().moverIzquierda();
+                    }
+                    comer();
+                    comer2();
+                    repaint();
                 }
-                comer();
-                //System.out.println(p.getPosicion().toString());
-                repaint();
+                
+                
             }
         });
         timer.start();
+        addKeyListener(p.getControles());
+        addKeyListener(p2.getControles());
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -98,39 +122,8 @@ public class Juego extends JPanel {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    if (p.getPosicion().sePuedeMoverArri()) {
-                        arriba = true;
-                        abajo = false;
-                        izq = false;
-                        der = false;
-                        p.setImg(2);
-                    }
-                    //repaint();
-                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    if (p.getPosicion().sePuedeMoverAba()) {
-                        arriba = false;
-                        abajo = true;
-                        izq = false;
-                        der = false;
-                        p.setImg(3);
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    if (p.getPosicion().sePuedeMoverIzq()) {
-                        arriba = false;
-                        abajo = false;
-                        izq = true;
-                        der = false;
-                        p.setImg(1);
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    if (p.getPosicion().sePuedeMoverDer()) {
-                        arriba = false;
-                        abajo = false;
-                        izq = false;
-                        der = true;
-                        p.setImg(0);
-                    }
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    estado = true;
                 }
 
             }
@@ -145,6 +138,14 @@ public class Juego extends JPanel {
     private void comer() {
         int pacx = p.getPosicion().getX();
         int pacy = p.getPosicion().getY();
+        if (tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida_Normal) {
+            tab.getElTablero()[pacy / 20][pacx / 20] = null;
+        }
+    }
+    
+    private void comer2() {
+        int pacx = p2.getPosicion().getX();
+        int pacy = p2.getPosicion().getY();
         if (tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida_Normal) {
             tab.getElTablero()[pacy / 20][pacx / 20] = null;
         }

@@ -30,7 +30,7 @@ public class BotonesPersonalizados extends JButton{
         setFocusable(false);
         String a= icon.getDescription();
         String b= icon2.getDescription();
-        System.out.println(b);
+        //System.out.println(b);
         addMouseListener(new EfectoDeMouse(a,b, this));
         setVisible(true);
     }
