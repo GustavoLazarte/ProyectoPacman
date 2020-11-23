@@ -41,6 +41,7 @@ public class Juego extends JPanel {
             izq = false,
             der = true;
     private boolean estado;
+    private JLabel puntuacion;
 
     public Juego() {
         setLayout(null);
@@ -50,6 +51,9 @@ public class Juego extends JPanel {
         setBackground(new Color(12, 20, 20));
         setBounds(0, 0, 481, 561);
         estado = false;
+        puntuacion = new JLabel();
+        puntuacion.setBounds(550, 125, 100, 50);
+        puntuacion.setVisible(true);
         ArrayList<ImageIcon> imagenes = new ArrayList<>();
         imagenes.add(new ImageIcon("PacmanDer.png"));
         imagenes.add(new ImageIcon("PacmanIzq.png"));
@@ -58,8 +62,8 @@ public class Juego extends JPanel {
         imagenes.add(new ImageIcon("pacmanCerrado.png"));
         tab = new Tablero();
         p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1),1);
-        p2 = new Pacman(imagenes, new Posicion(240, 280, getWidth() - 1, getHeight() - 1), 2);
-        p2.getControles().setIzq();
+        //p2 = new Pacman(imagenes, new Posicion(240, 280, getWidth() - 1, getHeight() - 1), 2);
+        //p2.getControles().setIzq();
         darAccion();
         setFocusable(true);
 
@@ -74,7 +78,7 @@ public class Juego extends JPanel {
         super.paint(g);
         tab.paint(g);
         p.paint(g);
-        p2.paint(g);
+        //p2.paint(g);
 
     }
 
@@ -94,17 +98,17 @@ public class Juego extends JPanel {
                         p.getPosicion().moverIzquierda();
                     }
                     
-                    if (p2.getControles().isArriba()) {
-                        p2.getPosicion().moverArriba();
-                    } else if (p2.getControles().isAbajo()) {
-                        p2.getPosicion().moverAbajo();
-                    } else if (p2.getControles().isDer()) {
-                        p2.getPosicion().moverDerecha();
-                    } else if (p2.getControles().isIzq()) {
-                        p2.getPosicion().moverIzquierda();
-                    }
+//                    if (p2.getControles().isArriba()) {
+//                        p2.getPosicion().moverArriba();
+//                    } else if (p2.getControles().isAbajo()) {
+//                        p2.getPosicion().moverAbajo();
+//                    } else if (p2.getControles().isDer()) {
+//                        p2.getPosicion().moverDerecha();
+//                    } else if (p2.getControles().isIzq()) {
+//                        p2.getPosicion().moverIzquierda();
+//                    }
                     comer();
-                    comer2();
+//                    comer2();
                     repaint();
                 }
                 
@@ -113,7 +117,7 @@ public class Juego extends JPanel {
         });
         timer.start();
         addKeyListener(p.getControles());
-        addKeyListener(p2.getControles());
+        //addKeyListener(p2.getControles());
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -139,8 +143,12 @@ public class Juego extends JPanel {
         int pacx = p.getPosicion().getX();
         int pacy = p.getPosicion().getY();
         if (tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida_Normal) {
+            Comida_Normal aux= (Comida_Normal)tab.getElTablero()[pacy / 20][pacx / 20];
+            p.setPuntos(aux.getValor());
+            puntuacion.setText(""+p.getPuntos());
             tab.getElTablero()[pacy / 20][pacx / 20] = null;
         }
+        //System.out.println(p.getPuntos());
     }
     
     private void comer2() {
@@ -150,4 +158,10 @@ public class Juego extends JPanel {
             tab.getElTablero()[pacy / 20][pacx / 20] = null;
         }
     }
+
+    public JLabel getPuntuacion() {
+        return puntuacion;
+    }
+    
+    
 }

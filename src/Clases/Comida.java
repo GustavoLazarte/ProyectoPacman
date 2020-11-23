@@ -18,6 +18,10 @@ public abstract class Comida extends ObjetoDeJuego{
     public Comida(int valor) {
         this.valor = valor;
     }
+
+    public int getValor() {
+        return valor;
+    }
     
     
 }

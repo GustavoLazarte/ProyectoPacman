@@ -87,4 +87,9 @@ public class Pacman {
         return controles;
     }
 
+    public void setPuntos(int puntos) {
+        this.puntos += puntos;
+    }
+    
+    
 }

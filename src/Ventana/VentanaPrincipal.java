@@ -69,9 +69,10 @@ public class VentanaPrincipal extends JFrame {
                 j= new Juego();
                 j.setVisible(true);
                 add(j);
+                add(j.getPuntuacion());
                 addKeyListener(j.getKeyListeners()[0]);
                 addKeyListener(j.getKeyListeners()[1]);
-                addKeyListener(j.getKeyListeners()[2]);
+                //addKeyListener(j.getKeyListeners()[2]);
             }
         });
     }
