@@ -69,5 +69,18 @@ public class BotonesDeMenu extends JPanel {
     public BotonesPersonalizados getBtn_Iniciar() {
         return btn_Iniciar;
     }
+
+    public BotonesPersonalizados getBtn_OpcionesDeJuego() {
+        return btn_OpcionesDeJuego;
+    }
+
+    public BotonesPersonalizados getBtn_Puntuaciones() {
+        return btn_Puntuaciones;
+    }
+
+    public BotonesPersonalizados getBtn_Salir() {
+        return btn_Salir;
+    }
+    
     
 }

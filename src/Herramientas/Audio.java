@@ -19,15 +19,19 @@ import javax.sound.sampled.Clip;
 public class Audio {
     private Clip clip;
 
-    public Audio(String ubicacion) {
+    public Audio(){
+    }
+    
+    public void reproducir(String ubicacion) {
         try {
             clip = AudioSystem.getClip();
             clip.open(AudioSystem.getAudioInputStream(new File(ubicacion)) );
-            clip.loop(100);
+            clip.start();
         } catch (Exception ex) {
             Logger.getLogger(Panel_Inicio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
     
     public void pausar(){
         clip.start();

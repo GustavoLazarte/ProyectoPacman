@@ -13,6 +13,7 @@ import java.awt.Graphics;
  */
 public abstract class ObjetoDeJuego {
     protected Ubicacion ubic;
+    protected int ancho,alto;
     abstract void paint(Graphics g);
     abstract void setUbicacion(int x, int y);
 

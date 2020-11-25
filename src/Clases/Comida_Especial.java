@@ -5,27 +5,34 @@
  */
 package Clases;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 /**
  *
  * @author Miguel
  */
-public class Comida_Especial extends Comida{
+public class Comida_Especial extends Comida {
+
     private static final int VALOR = 50;
-    public Comida_Especial(int valor) {
-        super(valor);
-        ubic= new Ubicacion();
+
+    public Comida_Especial() {
+        super(VALOR);
+        ancho = alto = 20;
+        ubic = new Ubicacion();
     }
 
     @Override
     void paint(Graphics g) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        g.setColor(Color.YELLOW);
+        g.fillRect(ubic.y, ubic.x, ancho, alto);
+        g.setColor(Color.BLACK);
+        g.drawOval(ubic.y, ubic.x, 10, 10);
     }
 
     @Override
     void setUbicacion(int x, int y) {
         ubic.setUbicacion(x, y);
     }
-    
+
 }

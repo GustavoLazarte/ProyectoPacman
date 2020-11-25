@@ -7,6 +7,7 @@ package Clases;
 
 import Interfaz_MenuJuego.Menu;
 import Interfaz_PanelInicio.Panel_Inicio;
+import Interfaz_Puntuaciones.Puntuaciones;
 import Ventana.VentanaPrincipal;
 import java.awt.BorderLayout;
 import java.awt.Color;

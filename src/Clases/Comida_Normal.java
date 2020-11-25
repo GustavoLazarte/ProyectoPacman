@@ -18,13 +18,14 @@ public class Comida_Normal extends Comida {
 
     public Comida_Normal() {
         super(VALOR);
+        ancho = alto = 20;
         ubic= new Ubicacion();
     }
 
     @Override
     void paint(Graphics g) {
         g.setColor(Color.red);
-        g.fillRect(ubic.y, ubic.x, 20, 20);
+        g.fillRect(ubic.y, ubic.x, ancho, alto);
         g.setColor(Color.blue);
         g.drawOval(ubic.y, ubic.x, 10, 10);
         

@@ -35,9 +35,6 @@ public class Pacman {
     public Pacman(ArrayList<ImageIcon> img, Posicion pos, int jug) {
 
         imagenes = img;
-        for (int i = 0; i < img.size(); i++) {
-            img.get(i).setImage(img.get(i).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        }
         imgActual = img.get(0);
         posicion = pos;
         if (jug == 1) {
@@ -48,14 +45,7 @@ public class Pacman {
     }
 
     public void paint(Graphics g) {
-        if (estado) {
-            g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), imgActual.getIconWidth(), imgActual.getIconHeight(), null);
-
-        } else {
-            g.drawImage(imagenes.get(4).getImage(), posicion.getX(), posicion.getY(), imgActual.getIconWidth(), imgActual.getIconHeight(), null);
-
-        }
-        estado = !estado;
+        g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
 
     }
 

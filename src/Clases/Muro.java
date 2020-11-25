@@ -15,6 +15,7 @@ import java.awt.Graphics;
 public class Muro extends ObjetoDeJuego {
 
     public Muro() {
+        ancho = alto = 20;
         ubic = new Ubicacion();
     }
     
@@ -23,7 +24,7 @@ public class Muro extends ObjetoDeJuego {
     @Override
     void paint(Graphics g) {
         g.setColor(Color.WHITE);
-        g.fillRect(ubic.y, ubic.x, 20, 20);
+        g.fillRect(ubic.y, ubic.x, ancho, alto);
         g.setColor(Color.blue);
         g.drawRect(ubic.y, ubic.x, 20, 20);
     }

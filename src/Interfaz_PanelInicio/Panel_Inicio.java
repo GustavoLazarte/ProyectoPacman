@@ -107,7 +107,8 @@ public class Panel_Inicio extends JPanel{
     }
 
     private void agregarMusiquita() {
-        audioFondo = new Audio("audioDeFondo.wav");
+        audioFondo = new Audio();
+        audioFondo.reproducir("audioDeFondo.wav");
     }
 
     public BotonesPersonalizados getBtn_inicio() {

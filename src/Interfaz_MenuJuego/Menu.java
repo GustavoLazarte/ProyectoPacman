@@ -52,13 +52,15 @@ public class Menu extends JPanel {
 
     private void agregarMusiquita() {
         if(isVisible()){
-            audioFondo = new Audio("audioDeFondo.wav");
+            audioFondo = new Audio();
+            audioFondo.reproducir("audioDeFondo.wav");
         }
     }
 
     public BotonesDeMenu getBotones() {
         return botones;
     }
+    
 
     
     
