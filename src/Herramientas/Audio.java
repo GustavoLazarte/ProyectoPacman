@@ -31,6 +31,16 @@ public class Audio {
             Logger.getLogger(Panel_Inicio.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void reproducirInfinito(String ubicacion) {
+        try {
+            clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(new File(ubicacion)) );
+            clip.loop(10000);
+        } catch (Exception ex) {
+            Logger.getLogger(Panel_Inicio.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     
     public void pausar(){
@@ -39,6 +49,14 @@ public class Audio {
     
     public void stop(){
         clip.stop();
+    }
+    
+    public boolean estaEnCurso(){
+        if(clip == null){
+            return false;
+        }else{
+            return clip.isRunning();
+        }
     }
     
 }

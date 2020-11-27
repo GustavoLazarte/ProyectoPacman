@@ -7,6 +7,8 @@ package Interfaz_Opciones;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -32,6 +34,12 @@ public class Opciones extends JPanel{
         add(barraDeMenu);
         JMenu skin= new JMenu("Apariencia");
         barraDeMenu.add(skin);
+        skin.addActionListener(new  ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JPanel nsd= new JPanel();
+            }
+        });
     }
     
 }

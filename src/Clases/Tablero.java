@@ -82,22 +82,38 @@ public class Tablero{
                 { 0, 1, 1, 7, 1, 1, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0},
                 { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 7, 1, 1, 0},
                 { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 7, 1, 1, 0},
-                { 0, 1, 7, 7, 7, 1, 7, 7, 7, 1, 1, 1, 0, 1, 0, 1, 0, 7, 0, 1, 0, 1, 1, 0},
+                { 0, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 0, 1, 0, 1, 0, 7, 0, 1, 0, 1, 1, 0},
                 { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 7, 1, 1, 0},
-                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 7, 1, 1, 0},
+                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
                 { 0, 1, 7, 7, 7, 7, 7, 1, 7, 7, 1, 1, 7, 7, 7, 1, 1, 7, 7, 7, 7, 7, 1, 0},
                 { 0, 1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                 { 0, 1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
                 { 0, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 0},
                 { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0} };
-        System.out.println(t.length + "a" + t[0].length);
-        boolean res= t[0].equals(t[t.length-1]);
-        System.out.println(res);
         return t;
     }
 
     public static ObjetoDeJuego[][] getElTablero() {
         return elTablero;
     }
+    
+    public boolean hayComida(){
+        boolean hay= false;
+        for (int i = 0; i < elTablero.length && !hay ; i++) {
+            for (int j = 0; j < elTablero[i].length && !hay; j++) {
+                if (elTablero[i][j] instanceof Comida){
+                    hay = true;
+                } 
+            }
+        }
+        
+        return hay;
+    }
+
+    public static void setElTablero(ObjetoDeJuego[][] elTablero) {
+        Tablero.elTablero = elTablero;
+    }
+    
+    
 
 }

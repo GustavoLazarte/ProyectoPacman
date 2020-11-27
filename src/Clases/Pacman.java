@@ -33,7 +33,7 @@ public class Pacman {
     private boolean estado;
 
     public Pacman(ArrayList<ImageIcon> img, Posicion pos, int jug) {
-
+        estado= true;
         imagenes = img;
         imgActual = img.get(0);
         posicion = pos;
@@ -45,8 +45,12 @@ public class Pacman {
     }
 
     public void paint(Graphics g) {
-        g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
-
+        if(estado){
+            g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
+        }else{
+            g.drawImage(imagenes.get(4).getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
+        }
+        estado = !estado;
     }
 
     public int getVida() {
@@ -77,9 +81,10 @@ public class Pacman {
         return controles;
     }
 
-    public void setPuntos(int puntos) {
+    public void comer(int puntos) {
         this.puntos += puntos;
     }
+    
     
     
 }

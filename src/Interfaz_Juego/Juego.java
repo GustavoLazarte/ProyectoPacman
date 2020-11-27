@@ -7,6 +7,7 @@ package Interfaz_Juego;
 
 import Clases.Comida;
 import Clases.Comida_Normal;
+import Clases.Fantasma;
 import Clases.Pacman;
 import Clases.Posicion;
 import Clases.Tablero;
@@ -32,21 +33,22 @@ import javax.swing.Timer;
 public class Juego extends JPanel {
 
     private Tablero tab;
-    private Pacman p,p2;
+    private Pacman p;
     private Timer timer;
     private boolean estado;
     private JLabel puntuacion;
     private Color colorDeFondo;
     private Rectangle tamaño;
-    private Audio audioDeComer;
+    private Audio audioDeComer, audioDeFondo;
+    private Fantasma fantasmas;
 
     public Juego() {
+        audioDeComer = new Audio();
+        audioDeFondo = new Audio();
         colorDeFondo = new Color(12, 20, 20);
         tamaño = new Rectangle(0, 0, 481, 561);
         setLayout(null);
         setOpaque(true);
-        //LineBorder borde = new LineBorder(Color.RED, 1);
-        //setBorder(borde);
         setBackground(colorDeFondo);
         setBounds(tamaño);
         estado = false;
@@ -54,22 +56,22 @@ public class Juego extends JPanel {
         puntuacion.setBounds(550, 125, 100, 50);
         puntuacion.setVisible(true);
         ArrayList<ImageIcon> imagenes = new ArrayList<>();
-        imagenes.add(new ImageIcon("pacman.gif"));
-        imagenes.add(new ImageIcon("pacman.gif"));
-        imagenes.add(new ImageIcon("pacman.gif"));
-        imagenes.add(new ImageIcon("pacman.gif"));
-        //imagenes.add(new ImageIcon("pacmanCerrado.png"));
+        imagenes.add(new ImageIcon("pacmanDer.png"));
+        imagenes.add(new ImageIcon("pacmanIzq.png"));
+        imagenes.add(new ImageIcon("pacmanArri.png"));
+        imagenes.add(new ImageIcon("pacmanAba.png"));
+        imagenes.add(new ImageIcon("pacmanCerrado.png"));
         tab = new Tablero();
-        p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1),1);
-        //p2 = new Pacman(imagenes, new Posicion(240, 280, getWidth() - 1, getHeight() - 1), 2);
-        //p2.getControles().setIzq();
-        darAccion();
+        p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1), 1);
+        fantasmas = new Fantasma(new ImageIcon("200.gif"), new ImageIcon("201.gif"), new Posicion(260, 200, getWidth() - 1, getHeight() - 1));
+        iniciarJuego();
         setFocusable(true);
 
     }
 
     private void iniciarJuego() {
-
+        darAccion();
+        obtenerControles();
     }
 
     public void paint(Graphics g) {
@@ -77,16 +79,19 @@ public class Juego extends JPanel {
         super.paint(g);
         tab.paint(g);
         p.paint(g);
+        fantasmas.paint(g);
         //p2.paint(g);
 
     }
 
-    public void darAccion() {
+    private void darAccion() {
 
         timer = new Timer(145, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (estado) {
+                
+                if (estado && tab.hayComida()) {
+                    fantasmas.getMov().iniciarMovimiento();
                     if (p.getControles().isArriba()) {
                         p.getPosicion().moverArriba();
                     } else if (p.getControles().isAbajo()) {
@@ -96,26 +101,26 @@ public class Juego extends JPanel {
                     } else if (p.getControles().isIzq()) {
                         p.getPosicion().moverIzquierda();
                     }
-                    System.out.println(timer.getDelay());
-                    
-//                    if (p2.getControles().isArriba()) {
-//                        p2.getPosicion().moverArriba();
-//                    } else if (p2.getControles().isAbajo()) {
-//                        p2.getPosicion().moverAbajo();
-//                    } else if (p2.getControles().isDer()) {
-//                        p2.getPosicion().moverDerecha();
-//                    } else if (p2.getControles().isIzq()) {
-//                        p2.getPosicion().moverIzquierda();
-//                    }
-                    comer();
+                    if (sePuedeComer(p.getPosicion())) {
+                        comer();
+                    }
 //                    comer2();
                     repaint();
+                } else {
+                    if (!tab.hayComida()) {
+                        System.out.println("Acabo el juego");
+                        timer.stop();
+                    }
                 }
                 
-                
+                //tab.setElTablero(elTablero);
             }
         });
+        
         timer.start();
+    }
+    
+    private void obtenerControles(){
         addKeyListener(p.getControles());
         //addKeyListener(p2.getControles());
         addKeyListener(new KeyListener() {
@@ -127,7 +132,8 @@ public class Juego extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    estado = !estado ;
+                    estado = !estado;
+                    audioDeFondo.reproducirInfinito("pacmansiren.wav");
                 }
 
             }
@@ -142,24 +148,27 @@ public class Juego extends JPanel {
     private void comer() {
         int pacx = p.getPosicion().getX();
         int pacy = p.getPosicion().getY();
-        if (tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida) {
-            Comida aux= (Comida)tab.getElTablero()[pacy / 20][pacx / 20];
-            p.setPuntos(aux.getValor());
-            puntuacion.setText(""+p.getPuntos());
-            tab.getElTablero()[pacy / 20][pacx / 20] = null;
+        
+        
+        if(!audioDeComer.estaEnCurso()){
+            audioDeComer.reproducir("wakawaka.wav");
         }
-    }
-    
-    private void comer2() {
-        int pacx = p2.getPosicion().getX();
-        int pacy = p2.getPosicion().getY();
-        if (tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida) {
-            tab.getElTablero()[pacy / 20][pacx / 20] = null;
-        }
+
+        Comida aux = (Comida) tab.getElTablero()[pacy / 20][pacx / 20];
+        p.comer(aux.getValor());
+        puntuacion.setText("" + p.getPuntos());
+        tab.getElTablero()[pacy / 20][pacx / 20] = null;
     }
 
     public JLabel getPuntuacion() {
         return puntuacion;
+    }
+
+    private boolean sePuedeComer(Posicion pacman) {
+        int pacx = pacman.getX();
+        int pacy = pacman.getY();
+
+        return tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida;
     }
     
     

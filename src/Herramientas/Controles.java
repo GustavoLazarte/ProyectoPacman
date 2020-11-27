@@ -111,10 +111,6 @@ public class Controles implements KeyListener {
         return der;
     }
 
-    public void setIzq() {
-        this.izq = true;
-        der = false;
-    }
     
     
 }

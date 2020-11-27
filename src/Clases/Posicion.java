@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
  *
  * @author Miguel
  */
-public class Posicion {
+public class Posicion{
 
     private int x, y;
     private static final int aumento = 20;
