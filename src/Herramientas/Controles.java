@@ -111,7 +111,12 @@ public class Controles implements KeyListener {
         return der;
     }
 
-    
+    public void updateControles(int Arriba, int Abajo, int Izq, int Der){
+        this.teclaArriba = Arriba;
+        this.teclaAbajo = Abajo;
+        this.teclaIzq = Izq;
+        this.teclaDer = Der;
+    }
     
 }
 

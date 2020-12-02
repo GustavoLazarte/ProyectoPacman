@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Ventana;
 
+import Herramientas.Controles;
 import Interfaz_Juego.Juego;
 import Interfaz_MenuJuego.Menu;
 import Interfaz_Opciones.Opciones;
@@ -20,29 +16,26 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JFrame;
 
-/**
- *
- * @author Miguel
- */
 public class VentanaPrincipal extends JFrame {
 
     private Menu menu;
     private Panel_Inicio inicio;
     private Juego j;
-    private Rectangle tamañoMenu, tamañoJuego;
+    private Rectangle tamañoMenu, tamañoJuego, tamanioP;
     private Opciones op;
     private Puntuaciones p;
 
     public VentanaPrincipal() {
         tamañoMenu = new Rectangle(350, 125, 516, 538);
         tamañoJuego = new Rectangle(350, 125, 635, 600);
+        tamanioP = new Rectangle(350, 125, 516, 835);
         menu = new Menu();
         menu.setVisible(false);
         inicio = new Panel_Inicio();
         setLayout(null);
         setBounds(tamañoMenu);
-        
-        
+        p = new Puntuaciones();
+        j= new Juego();
         add(inicio);
         add(menu);
         darAccionABotones();
@@ -74,7 +67,7 @@ public class VentanaPrincipal extends JFrame {
                 menu.setVisible(false);
                 setBounds(tamañoJuego);
                 //setFocusable(false);
-                j= new Juego();
+               
                 j.setVisible(true);
                 add(j);
                 add(j.getPuntuacion());
@@ -89,9 +82,9 @@ public class VentanaPrincipal extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 menu.setVisible(false);
                 setBounds(tamañoMenu);
-                op= new Opciones();
+                op= new Opciones(new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null), new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null), menu);
                 op.setVisible(true);
-                
+                 
                 add(op);
             }
         });
@@ -100,13 +93,29 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menu.setVisible(false);
-                setBounds(tamañoMenu);
-                p= new Puntuaciones();
+                setBounds(tamanioP);
+                //setBounds(tamañoJuego);
                 p.setVisible(true);
-                
                 add(p);
             }
         });
+        p.getBtn_regresar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                p.setVisible(false);
+                menu.setVisible(true);
+                setBounds(tamañoMenu);
+            }
+        });
+//        j.getBtn_regresar().addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                j.setVisible(false);
+//                menu.setVisible(true);
+//                setBounds(tamañoMenu);
+//            }
+//        });
     }
-
 }
+
+

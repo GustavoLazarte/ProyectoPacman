@@ -53,7 +53,7 @@ public class Panel_Inicio extends JPanel{
         agregarTitulo();
         agregarBotones();
         agregarMusiquita();
-        //setBorder(new LineBorder(Color.red, 1));
+        setBorder(new LineBorder(Color.red, 1));
         agregarFondo();   
         
         
@@ -99,8 +99,6 @@ public class Panel_Inicio extends JPanel{
         x= -(ico.getIconWidth()/2)+250;
         y= ((int)(getHeight()*0.25))- ico.getIconHeight();
         titulo = new JLabel(ico);
-        //titulo.setOpaque(true);
-        //titulo.setBackground(Color.red);
         titulo.setBounds(x, y,ico.getIconWidth(),ico.getIconHeight());
         
         add(titulo);
@@ -108,7 +106,7 @@ public class Panel_Inicio extends JPanel{
 
     private void agregarMusiquita() {
         audioFondo = new Audio();
-        audioFondo.reproducir("audioDeFondo.wav");
+        audioFondo.reproducir("audio.wav");
     }
 
     public BotonesPersonalizados getBtn_inicio() {

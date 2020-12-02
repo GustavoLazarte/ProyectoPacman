@@ -6,9 +6,12 @@
 package Clases;
 
 import Herramientas.Controles;
+import Interfaz_Juego.Juego;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.ImageObserver;
@@ -16,12 +19,13 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.Timer;
 
 /**
  *
  * @author Miguel
  */
-public class Pacman {
+public class Pacman implements ActionListener {
 
     private Controles controles;
     private int vida;
@@ -33,21 +37,22 @@ public class Pacman {
     private boolean estado;
 
     public Pacman(ArrayList<ImageIcon> img, Posicion pos, int jug) {
-        estado= true;
+        estado = true;
         imagenes = img;
         imgActual = img.get(0);
         posicion = pos;
         if (jug == 1) {
             controles = new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, this);
-        }else if(jug == 2){
+        } else if (jug == 2) {
             controles = new Controles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, this);
         }
+        vivo = true;
     }
 
     public void paint(Graphics g) {
-        if(estado){
+        if (estado) {
             g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
-        }else{
+        } else {
             g.drawImage(imagenes.get(4).getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
         }
         estado = !estado;
@@ -84,7 +89,27 @@ public class Pacman {
     public void comer(int puntos) {
         this.puntos += puntos;
     }
-    
-    
-    
+
+    public void setVivo() {
+        this.vivo = false;
+    }
+
+    public boolean isVivo() {
+        return vivo;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e){
+        if (vivo) {
+            if (getControles().isArriba()) {
+                posicion.moverArriba();
+            } else if (getControles().isAbajo()) {
+                posicion.moverAbajo();
+            } else if (getControles().isDer()) {
+                posicion.moverDerecha();
+            } else if (getControles().isIzq()) {
+                posicion.moverIzquierda();
+            }
+        }
+    }
 }

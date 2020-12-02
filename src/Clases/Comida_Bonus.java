@@ -13,7 +13,7 @@ public class Comida_Bonus extends Comida {
 
     public Comida_Bonus() {
         super(VALOR);
-        ancho = alto = 20;
+
         ubic = new Ubicacion();
     }
 

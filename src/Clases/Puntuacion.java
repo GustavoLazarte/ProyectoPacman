@@ -9,7 +9,8 @@ package Clases;
  *
  * @author Miguel
  */
-public class Puntuacion implements  Comparable<Puntuacion>{
+public class Puntuacion implements Comparable<Puntuacion> {
+
     private String nombre;
     private int puntos;
 
@@ -17,15 +18,13 @@ public class Puntuacion implements  Comparable<Puntuacion>{
         this.nombre = nombre;
         this.puntos = puntos;
     }
-    
-    
 
     public int compareTo(Puntuacion otra) {
-        if(puntos > otra.getPuntos()){
+        if (puntos > otra.getPuntos()) {
             return 1;
-        }else if(puntos == otra.getPuntos()){
-           return 0;
-        }else{
+        } else if (puntos == otra.getPuntos()) {
+            return 0;
+        } else {
             return -1;
         }
     }
@@ -40,14 +39,7 @@ public class Puntuacion implements  Comparable<Puntuacion>{
 
     @Override
     public String toString() {
-        return ""+puntos;
+        return "" + puntos;
     }
-    
-    
 
-    
-    
-    
-    
-    
 }

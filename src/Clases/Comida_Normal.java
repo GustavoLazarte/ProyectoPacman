@@ -18,7 +18,6 @@ public class Comida_Normal extends Comida {
 
     public Comida_Normal() {
         super(VALOR);
-        ancho = alto = 20;
         ubic= new Ubicacion();
     }
 

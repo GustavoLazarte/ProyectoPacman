@@ -32,26 +32,33 @@ import javax.swing.Timer;
  */
 public class Juego extends JPanel {
 
+    public static final int EN_CURSO = 1;
+    public static final int NO_INICIADO = 0;
+    public static final int TERMINADO = -1;
+
     private Tablero tab;
     private Pacman p;
     private Timer timer;
-    private boolean estado;
+    private int estado;
     private JLabel puntuacion;
     private Color colorDeFondo;
     private Rectangle tamaño;
     private Audio audioDeComer, audioDeFondo;
-    private Fantasma fantasmas;
+    private Fantasma[] fantasmas;
+    private boolean hayCambio;
 
     public Juego() {
+        hayCambio = true;
         audioDeComer = new Audio();
         audioDeFondo = new Audio();
         colorDeFondo = new Color(12, 20, 20);
         tamaño = new Rectangle(0, 0, 481, 561);
+        fantasmas = new Fantasma[1];
         setLayout(null);
         setOpaque(true);
         setBackground(colorDeFondo);
         setBounds(tamaño);
-        estado = false;
+        estado = 0;
         puntuacion = new JLabel();
         puntuacion.setBounds(550, 125, 100, 50);
         puntuacion.setVisible(true);
@@ -63,7 +70,7 @@ public class Juego extends JPanel {
         imagenes.add(new ImageIcon("pacmanCerrado.png"));
         tab = new Tablero();
         p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1), 1);
-        fantasmas = new Fantasma(new ImageIcon("200.gif"), new ImageIcon("201.gif"), new Posicion(260, 200, getWidth() - 1, getHeight() - 1));
+        agregarFantasmas();
         iniciarJuego();
         setFocusable(true);
 
@@ -75,54 +82,41 @@ public class Juego extends JPanel {
     }
 
     public void paint(Graphics g) {
-
         super.paint(g);
         tab.paint(g);
+        fantasmas[0].paint(g);
+//        fantasmas[1].paint(g);
+//        fantasmas[2].paint(g);
+//        fantasmas[3].paint(g);
         p.paint(g);
-        fantasmas.paint(g);
-        //p2.paint(g);
 
     }
 
     private void darAccion() {
-
-        timer = new Timer(145, new ActionListener() {
+        timer = new Timer(145, null);
+        timer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
-                if (estado && tab.hayComida()) {
-                    fantasmas.getMov().iniciarMovimiento();
-                    if (p.getControles().isArriba()) {
-                        p.getPosicion().moverArriba();
-                    } else if (p.getControles().isAbajo()) {
-                        p.getPosicion().moverAbajo();
-                    } else if (p.getControles().isDer()) {
-                        p.getPosicion().moverDerecha();
-                    } else if (p.getControles().isIzq()) {
-                        p.getPosicion().moverIzquierda();
-                    }
+                if (estado == EN_CURSO) {
                     if (sePuedeComer(p.getPosicion())) {
                         comer();
                     }
-//                    comer2();
-                    repaint();
-                } else {
-                    if (!tab.hayComida()) {
-                        System.out.println("Acabo el juego");
-                        timer.stop();
+                    if (!p.isVivo() || !tab.hayComida()) {
+                        estado = TERMINADO;
                     }
+                    repaint();
+                } else if (estado == TERMINADO) {
+                    detenerMovimientos();
+                    timer.stop();
                 }
-                
-                //tab.setElTablero(elTablero);
             }
         });
-        
+
         timer.start();
     }
-    
-    private void obtenerControles(){
+
+    private void obtenerControles() {
         addKeyListener(p.getControles());
-        //addKeyListener(p2.getControles());
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -132,8 +126,11 @@ public class Juego extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    estado = !estado;
+                    estado = EN_CURSO;
                     audioDeFondo.reproducirInfinito("pacmansiren.wav");
+                    timer.addActionListener(p);
+                    timer.addActionListener(fantasmas[0].getMov());
+                    iniciarMovimientos();
                 }
 
             }
@@ -148,9 +145,8 @@ public class Juego extends JPanel {
     private void comer() {
         int pacx = p.getPosicion().getX();
         int pacy = p.getPosicion().getY();
-        
-        
-        if(!audioDeComer.estaEnCurso()){
+
+        if (!audioDeComer.estaEnCurso()) {
             audioDeComer.reproducir("wakawaka.wav");
         }
 
@@ -170,6 +166,24 @@ public class Juego extends JPanel {
 
         return tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida;
     }
-    
-    
+
+    private void agregarFantasmas() {
+        for (int i = 0; i < fantasmas.length; i++) {
+            fantasmas[i] = new Fantasma(new ImageIcon("200.gif"), new ImageIcon("201.gif"), new Posicion(240, 520, getWidth() - 1, getHeight() - 1));
+        }
+    }
+
+    private void iniciarMovimientos() {
+        for (int i = 0; i < fantasmas.length; i++) {
+//            fantasmas[i].getMov().iniciarMovimiento();
+            fantasmas[i].getMov().setP(p);
+        }
+    }
+
+    private void detenerMovimientos() {
+        for (int i = 0; i < fantasmas.length; i++) {
+//            fantasmas[i].getMov().detenerTiempo();
+        }
+    }
+
 }

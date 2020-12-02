@@ -14,7 +14,7 @@ import java.awt.Graphics;
 public class Portal extends ObjetoDeJuego{
 
     public Portal() {
-        ancho = alto = 20;
+        super();
         ubic= new Ubicacion();
     }
     

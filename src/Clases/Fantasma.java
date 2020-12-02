@@ -14,7 +14,8 @@ import javax.swing.ImageIcon;
  *
  * @author Miguel
  */
-public class Fantasma{
+public class Fantasma {
+
     private boolean comible;
     private int valor;
     private Posicion posicion;
@@ -29,21 +30,20 @@ public class Fantasma{
         mov = new MovimientoAuto(this);
     }
 
-    
-    
-    public void paint(Graphics g){
+    public void paint(Graphics g) {
         if (!comible) {
             g.drawImage(fantasmaNormal.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
-        }else{
+        } else {
             g.drawImage(fantasmaComible.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
         }
     }
-    
-    public void cambiarEstado(){
+
+    public void cambiarEstado() {
         comible = !comible;
     }
+
     public boolean esComible() {
-        return comible==true;
+        return comible == true;
     }
 
     public int getValor() {

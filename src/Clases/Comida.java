@@ -16,6 +16,7 @@ public abstract class Comida extends ObjetoDeJuego{
     protected int valor;
     
     public Comida(int valor) {
+        super();
         this.valor = valor;
     }
 

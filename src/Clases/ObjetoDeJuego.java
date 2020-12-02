@@ -17,6 +17,14 @@ public abstract class ObjetoDeJuego {
     abstract void paint(Graphics g);
     abstract void setUbicacion(int x, int y);
 
+    public ObjetoDeJuego() {
+        ancho = alto = 20;
+    }
+
+    
+    
+    
+
     public Ubicacion getUbic() {
         return ubic;
     }
