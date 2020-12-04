@@ -2,6 +2,7 @@ package Clases;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -10,24 +11,28 @@ import java.awt.Graphics;
 public class Comida_Bonus extends Comida {
 
     private static final int VALOR = 100;
+    private boolean aparecer;
 
-    public Comida_Bonus() {
-        super(VALOR);
-
+    public Comida_Bonus(ImageIcon sp) {        
+        super(VALOR,sp);
+        aparecer = false;
         ubic = new Ubicacion();
     }
 
     @Override
     void paint(Graphics g) {
-        g.setColor(Color.pink);
-        g.fillRect(ubic.y, ubic.x, ancho, alto);
-        g.setColor(Color.gray);
-        g.drawOval(ubic.y, ubic.x, 10, 10);
+        if(sprite != null && aparecer ){
+            g.drawImage(sprite.getImage(),ubic.y, ubic.x, ancho, alto, null);
+        }
+        
     }
 
     @Override
     void setUbicacion(int x, int y) {
         ubic.setUbicacion(x, y);
     }
-
+    
+    public void aparecer(){
+        aparecer = true;
+    }
 }

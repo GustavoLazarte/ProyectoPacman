@@ -13,7 +13,7 @@ import java.awt.event.KeyEvent;
  *
  * @author Miguel
  */
-public class Posicion{
+public class Posicion {
 
     private int x, y;
     private static final int aumento = 20;
@@ -31,28 +31,36 @@ public class Posicion{
         columnas = lab[0].length;
     }
 
-    public void moverArriba() {
+    public boolean moverArriba() {
         if (sePuedeMoverArri()) {
             y = y - aumento;
+            return true;
         }
+        return false;
     }
 
-    public void moverAbajo() {
+    public boolean moverAbajo() {
         if (sePuedeMoverAba()) {
             y = y + aumento;
+            return true;
         }
+        return false;
     }
 
-    public void moverIzquierda() {
+    public boolean moverIzquierda() {
         if (sePuedeMoverIzq()) {
             x = x - aumento;
+            return true;
         }
+        return false;
     }
 
-    public void moverDerecha() {
+    public boolean moverDerecha() {
         if (sePuedeMoverDer()) {
             x = x + aumento;
+            return true;
         }
+        return false;
     }
 
     public boolean sePuedeMoverDer() {
@@ -171,5 +179,11 @@ public class Posicion{
     public String toString() {
         return "posicion en x: " + getX() + " posicion en  y: " + getY();
     }
+
+    public Rectangle getArea() {
+        return area;
+    }
+    
+    
 
 }

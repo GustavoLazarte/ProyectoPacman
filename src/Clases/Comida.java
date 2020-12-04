@@ -7,6 +7,7 @@ package Clases;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -15,8 +16,8 @@ import java.awt.Graphics;
 public abstract class Comida extends ObjetoDeJuego{
     protected int valor;
     
-    public Comida(int valor) {
-        super();
+    public Comida(int valor, ImageIcon sp) {
+        sprite = sp;
         this.valor = valor;
     }
 

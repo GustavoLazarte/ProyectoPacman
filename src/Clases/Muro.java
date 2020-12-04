@@ -7,6 +7,7 @@ package Clases;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -14,8 +15,9 @@ import java.awt.Graphics;
  */
 public class Muro extends ObjetoDeJuego {
 
-    public Muro() {
+    public Muro(ImageIcon sp) {
         super();
+        sprite = sp;
         ubic = new Ubicacion();
     }
     
@@ -23,10 +25,9 @@ public class Muro extends ObjetoDeJuego {
 
     @Override
     void paint(Graphics g) {
-        g.setColor(Color.WHITE);
-        g.fillRect(ubic.y, ubic.x, ancho, alto);
-        g.setColor(Color.blue);
-        g.drawRect(ubic.y, ubic.x, ancho, alto);
+        if(sprite != null){
+            g.drawImage(sprite.getImage(),ubic.y, ubic.x, ancho, alto, null);
+        }
     }
 
     @Override

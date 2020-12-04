@@ -7,6 +7,7 @@ package Clases;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -16,18 +17,16 @@ public class Comida_Especial extends Comida {
 
     private static final int VALOR = 50;
 
-    public Comida_Especial() {
-        super(VALOR);
-        ancho = alto = 15;
+    public Comida_Especial(ImageIcon sp) {
+        super(VALOR,sp);
         ubic = new Ubicacion();
     }
 
     @Override
     void paint(Graphics g) {
-        g.setColor(Color.YELLOW);
-        g.fillRect(ubic.y, ubic.x, ancho, alto);
-        g.setColor(Color.BLACK);
-        g.drawOval(ubic.y, ubic.x, 10, 10);
+        if(sprite != null){
+            g.drawImage(sprite.getImage(),ubic.y, ubic.x, ancho, alto, null);
+        }
     }
 
     @Override

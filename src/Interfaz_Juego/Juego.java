@@ -12,7 +12,9 @@ import Clases.Pacman;
 import Clases.Posicion;
 import Clases.Tablero;
 import Herramientas.Audio;
+import Interfaz_Opciones.Opciones;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -46,30 +48,40 @@ public class Juego extends JPanel {
     private Audio audioDeComer, audioDeFondo;
     private Fantasma[] fantasmas;
     private boolean hayCambio;
+    private JLabel etiqueta;
 
     public Juego() {
         hayCambio = true;
         audioDeComer = new Audio();
         audioDeFondo = new Audio();
         colorDeFondo = new Color(12, 20, 20);
-        tamaño = new Rectangle(0, 0, 481, 561);
+        tamaño = new Rectangle(10, 40, 480, 560);
         fantasmas = new Fantasma[1];
+        agregarScore();
         setLayout(null);
         setOpaque(true);
         setBackground(colorDeFondo);
         setBounds(tamaño);
         estado = 0;
-        puntuacion = new JLabel();
-        puntuacion.setBounds(550, 125, 100, 50);
-        puntuacion.setVisible(true);
         ArrayList<ImageIcon> imagenes = new ArrayList<>();
         imagenes.add(new ImageIcon("pacmanDer.png"));
         imagenes.add(new ImageIcon("pacmanIzq.png"));
         imagenes.add(new ImageIcon("pacmanArri.png"));
         imagenes.add(new ImageIcon("pacmanAba.png"));
         imagenes.add(new ImageIcon("pacmanCerrado.png"));
-        tab = new Tablero();
-        p = new Pacman(imagenes, new Posicion(260, 280, getWidth() - 1, getHeight() - 1), 1);
+        ArrayList<ImageIcon> imagenesTab = new ArrayList<>();
+        ImageIcon cn= new ImageIcon("Comida.png");
+        ImageIcon ce= new ImageIcon("Suero.png");
+        ImageIcon cb= new ImageIcon("Comida 2.png");
+        ImageIcon m= new ImageIcon("Muro.png");
+        ImageIcon s= new ImageIcon("Suelo.png");
+        imagenesTab.add(cn);
+        imagenesTab.add(ce);
+        imagenesTab.add(cb);
+        imagenesTab.add(m);
+        imagenesTab.add(s);
+        tab = new Tablero(imagenesTab);
+        p = new Pacman(imagenes, new Posicion(260, 280, getWidth(), getHeight()), 1);
         agregarFantasmas();
         iniciarJuego();
         setFocusable(true);
@@ -93,7 +105,7 @@ public class Juego extends JPanel {
     }
 
     private void darAccion() {
-        timer = new Timer(145, null);
+        timer = new Timer(155, null);
         timer.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,7 +113,7 @@ public class Juego extends JPanel {
                     if (sePuedeComer(p.getPosicion())) {
                         comer();
                     }
-                    if (!p.isVivo() || !tab.hayComida()) {
+                    if (!p.tieneVidas() || !tab.hayComida()) {
                         estado = TERMINADO;
                     }
                     repaint();
@@ -112,7 +124,7 @@ public class Juego extends JPanel {
             }
         });
 
-        timer.start();
+        
     }
 
     private void obtenerControles() {
@@ -128,6 +140,7 @@ public class Juego extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     estado = EN_CURSO;
                     audioDeFondo.reproducirInfinito("pacmansiren.wav");
+                    timer.start();
                     timer.addActionListener(p);
                     timer.addActionListener(fantasmas[0].getMov());
                     iniciarMovimientos();
@@ -152,7 +165,7 @@ public class Juego extends JPanel {
 
         Comida aux = (Comida) tab.getElTablero()[pacy / 20][pacx / 20];
         p.comer(aux.getValor());
-        puntuacion.setText("" + p.getPuntos());
+        puntuacion.setText(""+p.getPuntos());
         tab.getElTablero()[pacy / 20][pacx / 20] = null;
     }
 
@@ -169,7 +182,7 @@ public class Juego extends JPanel {
 
     private void agregarFantasmas() {
         for (int i = 0; i < fantasmas.length; i++) {
-            fantasmas[i] = new Fantasma(new ImageIcon("200.gif"), new ImageIcon("201.gif"), new Posicion(240, 520, getWidth() - 1, getHeight() - 1));
+            fantasmas[i] = new Fantasma(new ImageIcon("200.gif"), new ImageIcon("201.gif"), new Posicion(220, 240, getWidth() - 1, getHeight() - 1));
         }
     }
 
@@ -186,4 +199,28 @@ public class Juego extends JPanel {
         }
     }
 
+    private void agregarScore() {
+        Font fuente= new Font("MegaMan 2", Font.BOLD, 15);
+        etiqueta = new JLabel("Score");
+        etiqueta.setBounds(10, 10, 80, 20);
+        etiqueta.setFont(fuente);
+        etiqueta.setForeground(colorDeFondo.YELLOW);
+        etiqueta.setVisible(true);
+        puntuacion = new JLabel();
+        puntuacion.setBounds(100, 10, 100, 20);
+        puntuacion.setFont(fuente);
+        puntuacion.setForeground(colorDeFondo.WHITE);
+        puntuacion.setVisible(true);
+    }
+
+    public JLabel getEtiqueta() {
+        return etiqueta;
+    }
+
+    public Pacman getP() {
+        return p;
+    }
+ 
+    
+    
 }

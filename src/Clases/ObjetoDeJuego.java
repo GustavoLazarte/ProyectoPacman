@@ -6,6 +6,8 @@
 package Clases;
 
 import java.awt.Graphics;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -14,6 +16,7 @@ import java.awt.Graphics;
 public abstract class ObjetoDeJuego {
     protected Ubicacion ubic;
     protected int ancho,alto;
+    protected ImageIcon sprite;
     abstract void paint(Graphics g);
     abstract void setUbicacion(int x, int y);
 

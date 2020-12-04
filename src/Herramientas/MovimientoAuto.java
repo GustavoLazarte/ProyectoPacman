@@ -38,54 +38,50 @@ public class MovimientoAuto implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 //        if (t.isRunning()) {
-            //if (contadorDePasos < limite) {
-            if (arriba) {
-                if (f.getPosicion().sePuedeMoverArri()) {
-                    f.getPosicion().moverArriba();
-                    contadorDePasos++;
-                    if (hayColisionAbajo()) {
-                        p.setVivo();
-//                        detenerTiempo();
-                    }
-                } else {
-                    cambiarDireccion();
+        //if (contadorDePasos < limite) {
+        if (arriba) {
+            if (f.getPosicion().moverArriba()) {;
+                contadorDePasos++;
+                if (hayColision() && p.tieneVidas()) {
+                    p.reiniciarPacman();
+                    f.reiniciarFantasma();
                 }
-            } else if (abajo) {
-                if (f.getPosicion().sePuedeMoverAba()) {
-                    f.getPosicion().moverAbajo();
-                    contadorDePasos++;
-                    if (hayColisionArriba()) {
-                        p.setVivo();
-//                        detenerTiempo();
-                    }
-                } else {
-                    cambiarDireccion();
-                }
-
-            } else if (der) {
-                if (f.getPosicion().sePuedeMoverDer()) {
-                    f.getPosicion().moverDerecha();
-                    contadorDePasos++;
-                    if (hayColisionIzq()) {
-                        p.setVivo();
-//                        detenerTiempo();
-                    }
-                } else {
-                    cambiarDireccion();
-                }
-
-            } else if (izq) {
-                if (f.getPosicion().sePuedeMoverIzq()) {
-                    f.getPosicion().moverIzquierda();
-                    contadorDePasos++;
-                    if (hayColisionDer()) {
-                        p.setVivo();
-//                        detenerTiempo();
-                    }
-                } else {
-                    cambiarDireccion();
-                }
+            } else {
+                cambiarDireccion();
             }
+        } else if (abajo) {
+            if (f.getPosicion().moverAbajo()) {;
+                contadorDePasos++;
+                if (hayColision() && p.tieneVidas()) {
+                    p.reiniciarPacman();
+                    f.reiniciarFantasma();
+                }
+            } else {
+                cambiarDireccion();
+            }
+
+        } else if (der) {
+            if (f.getPosicion().moverDerecha()) {;
+                contadorDePasos++;
+                if (hayColision() && p.tieneVidas()) {
+                    p.reiniciarPacman();
+                    f.reiniciarFantasma();
+                }
+            } else {
+                cambiarDireccion();
+            }
+
+        } else if (izq) {
+            if (f.getPosicion().moverIzquierda()) {;
+                contadorDePasos++;
+                if (hayColision() && p.tieneVidas()) {
+                    p.reiniciarPacman();
+                    f.reiniciarFantasma();
+                }
+            } else {
+                cambiarDireccion();
+            }
+        }
 
 //                contadorDePasos++;
 //            } else {
@@ -135,7 +131,6 @@ public class MovimientoAuto implements ActionListener {
 //    public void detenerTiempo() {
 //        t.stop();
 //    }
-
     public boolean hayColision(Pacman p) {
         return hayColisionIzq() || hayColisionDer() || hayColisionArriba() || hayColisionAbajo();
     }
@@ -146,24 +141,28 @@ public class MovimientoAuto implements ActionListener {
                 if ((p.getControles().isArriba() || p.getControles().isAbajo()) && (abajo)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la arri");
                         return true;
                     }
                 } else if ((p.getControles().isDer() || p.getControles().isIzq()) && (abajo)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la arri");
                         return true;
                     }
                 } else if ((izq || der) && (p.getControles().isArriba())) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la arri r");
                         return true;
                     }
                 } else if (abajo && p.getControles().isAbajo()) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la arri r");
                         return true;
                     }
@@ -179,24 +178,28 @@ public class MovimientoAuto implements ActionListener {
                 if ((p.getControles().isArriba() || p.getControles().isAbajo()) && (arriba)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la abajo");
                         return true;
                     }
                 } else if ((p.getControles().isDer() || p.getControles().isIzq()) && (arriba)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la abajo");
                         return true;
                     }
                 } else if ((izq || der) && (p.getControles().isAbajo())) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la abajo");
                         return true;
                     }
                 } else if (arriba && p.getControles().isArriba()) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la abajo r");
                         return true;
                     }
@@ -206,30 +209,38 @@ public class MovimientoAuto implements ActionListener {
         return false;
     }
 
+    private boolean hayColision() {
+        return hayColisionAbajo() || hayColisionArriba() || hayColisionDer() || hayColisionIzq();
+    }
+
     private boolean hayColisionIzq() {
         if (f.getPosicion().getY() == p.getPosicion().getY()) {
             if (f.getPosicion().getX() == p.getPosicion().getX() - 20) {
                 if ((p.getControles().isArriba() || p.getControles().isAbajo()) && (der)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la izq");
                         return true;
                     }
                 } else if ((p.getControles().isDer() || p.getControles().isIzq()) && (der)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la izq");
                         return true;
                     }
                 } else if ((arriba || abajo) && (p.getControles().isIzq())) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la izq r");
                         return true;
                     }
                 } else if (der && p.getControles().isDer()) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la izq r");
                         return true;
                     }
@@ -246,12 +257,14 @@ public class MovimientoAuto implements ActionListener {
                 if ((p.getControles().isArriba() || p.getControles().isAbajo()) && (izq)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la der");
                         return true;
                     }
                 } else if ((p.getControles().isDer() || p.getControles().isIzq()) && (izq)) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la der");
                         return true;
                     }
@@ -259,11 +272,13 @@ public class MovimientoAuto implements ActionListener {
                     if (!f.esComible()) {
                         p.setImg(4);
                         System.out.println("hay colision por la der r");
+                        p.morir();
                         return true;
                     }
                 } else if (izq && p.getControles().isIzq()) {
                     if (!f.esComible()) {
                         p.setImg(4);
+                        p.morir();
                         System.out.println("hay colision por la der r");
                         return true;
                     }
@@ -281,7 +296,6 @@ public class MovimientoAuto implements ActionListener {
 //    public void iniciarMovimiento() {
 //        t.start();
 //    }
-
     public boolean isArriba() {
         return arriba;
     }

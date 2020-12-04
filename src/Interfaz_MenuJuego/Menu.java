@@ -1,24 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Interfaz_MenuJuego;
 
 import Herramientas.Audio;
 import Herramientas.BotonesPersonalizados;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/**
- *
- * @author Miguel
- */
 public class Menu extends JPanel {
     private BotonesDeMenu botones;
     private JLabel fondo;
@@ -29,27 +18,49 @@ public class Menu extends JPanel {
         setOpaque(true);
         setVisible(false);
         setBounds(0,0,500, 500);
+        setBackground(Color.BLACK); 
+        agregarF();
+        //agregarM();
         agregarBotones();
         agregarMusiquita();
-        agregarFondo();
-        //setLayout(new BorderLayout());
+        
     }
 
     private void agregarBotones() {
-        int a= (int)(500* (0.5));
-        botones = new BotonesDeMenu(getWidth()-a,375);
-        botones.setLocation(a,getHeight()-botones.getHeight());
+        
+        botones = new BotonesDeMenu(500,500);
+        botones.setLocation(0,0);
+        //botones.setLocation(0,getHeight());
         add(botones);
     }
     
     private void agregarFondo() {
-        ImageIcon ico= new ImageIcon("mapaPacman.gif");
+        ImageIcon ico= new ImageIcon("FondoMenu.jpg");
         fondo= new JLabel(ico);
         fondo.setBounds(0, 0, getWidth(), getHeight());
+        fondo.setIcon(new ImageIcon(ico.getImage().getScaledInstance(getWidth()+1, getHeight(),Image.SCALE_SMOOTH)));
         fondo.setBackground(Color.red);
         add(fondo);
     }
-
+    private void agregarF(){
+        int x = 0;
+        int y = 0;
+        ImageIcon ico = new ImageIcon("fantasmas.jpg");
+        JLabel s = new JLabel(ico);
+        s.setBounds(x, y, 500, 180);
+        s.setIcon(new ImageIcon(ico.getImage().getScaledInstance(500, 180, Image.SCALE_SMOOTH)));
+        add(s);
+    }
+    private void agregarM(){
+        int x = 290;
+        int y = 100;
+        ImageIcon ico = new ImageIcon("miniPacman4.png");
+        JLabel s = new JLabel(ico);
+        s.setBounds(x, y, 100, 50);
+        s.setIcon(new ImageIcon(ico.getImage().getScaledInstance(100, 50, Image.SCALE_SMOOTH)));
+        add(s);
+    }
+    
     private void agregarMusiquita() {
         if(isVisible()){
             audioFondo = new Audio();
@@ -61,8 +72,6 @@ public class Menu extends JPanel {
         return botones;
     }
     
-
-    
-    
+  
     
 }

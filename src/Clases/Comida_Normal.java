@@ -7,6 +7,7 @@ package Clases;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -16,18 +17,16 @@ public class Comida_Normal extends Comida {
 
     private static final int VALOR = 20;
 
-    public Comida_Normal() {
-        super(VALOR);
+    public Comida_Normal(ImageIcon sp) {
+        super(VALOR,sp);
         ubic= new Ubicacion();
     }
 
     @Override
     void paint(Graphics g) {
-        g.setColor(Color.red);
-        g.fillRect(ubic.y, ubic.x, ancho, alto);
-        g.setColor(Color.blue);
-        g.drawOval(ubic.y, ubic.x, 10, 10);
-        
+        if(sprite != null){
+            g.drawImage(sprite.getImage(),ubic.y, ubic.x, ancho, alto, null);
+        }
     }
 
     @Override

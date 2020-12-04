@@ -6,6 +6,7 @@
 package Clases;
 
 import java.awt.Graphics;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -13,8 +14,9 @@ import java.awt.Graphics;
  */
 public class Portal extends ObjetoDeJuego{
 
-    public Portal() {
+    public Portal(ImageIcon sp) {
         super();
+        sprite = sp;        
         ubic= new Ubicacion();
     }
     
@@ -22,7 +24,9 @@ public class Portal extends ObjetoDeJuego{
 
     @Override
     void paint(Graphics g) {
-        
+        if(sprite != null){
+            g.drawImage(sprite.getImage(),ubic.y, ubic.x, ancho, alto, null);
+        }
     }
 
     @Override

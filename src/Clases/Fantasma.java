@@ -18,7 +18,7 @@ public class Fantasma {
 
     private boolean comible;
     private int valor;
-    private Posicion posicion;
+    private Posicion posicion, inicial;
     private ImageIcon fantasmaNormal, fantasmaComible;
     private MovimientoAuto mov;
 
@@ -26,6 +26,7 @@ public class Fantasma {
         this.fantasmaNormal = fantasmaNormal;
         this.fantasmaComible = fantasmaComible;
         comible = false;
+        inicial = new Posicion(p.getX(), p.getY(), (int)p.getArea().getWidth(), (int)p.getArea().getHeight());
         posicion = p;
         mov = new MovimientoAuto(this);
     }
@@ -57,6 +58,9 @@ public class Fantasma {
     public MovimientoAuto getMov() {
         return mov;
     }
-
+    
+    public void reiniciarFantasma(){
+        posicion = new Posicion(inicial.getX(), inicial.getY(), (int)inicial.getArea().getMaxX(), (int)inicial.getArea().getMaxY());
+    }
     
 }
