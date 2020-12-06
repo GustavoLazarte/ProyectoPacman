@@ -1,5 +1,6 @@
 package Ventana;
 
+import Herramientas.Audio;
 import Herramientas.Controles;
 import Interfaz_Juego.Juego;
 import Interfaz_MenuJuego.Menu;
@@ -32,24 +33,26 @@ public class VentanaPrincipal extends JFrame {
     private Rectangle tamañoMenu, tamañoJuego, tamanioP;
     private Opciones op;
     private Puntuaciones p;
+    private static Audio audioFondo;
     private final Toolkit miPc;
 
     public VentanaPrincipal() {
+        Controles c1 = new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null);
+        Controles c2 = new Controles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, null);
         miPc = Toolkit.getDefaultToolkit();
         Dimension dimPantalla = miPc.getScreenSize();
-        tamañoMenu = new Rectangle(dimPantalla.width/4, dimPantalla.height/32, 516, 538);
-        tamañoJuego = new Rectangle(dimPantalla.width/4, dimPantalla.height/32, 500+16, 680);
+        tamañoMenu = new Rectangle(dimPantalla.width / 4, dimPantalla.height / 32, 516, 538);
+        tamañoJuego = new Rectangle(dimPantalla.width / 4, dimPantalla.height / 32, 500 + 16, 680);
         tamanioP = new Rectangle(350, 125, 516, 835);
         menu = new Menu();
         menu.setVisible(false);
         inicio = new Panel_Inicio();
+        agregarMusiquita();
         setLayout(null);
         getContentPane().setBackground(Color.BLACK);
         setBounds(tamañoMenu);
         p = new Puntuaciones();
-        j = new Juego();
-        double a=getSize().getWidth() - j.getWidth();
-        System.out.println(a);
+        op = new Opciones(c1, c2, menu);
         add(inicio);
         add(menu);
         darAccionABotones();
@@ -78,7 +81,10 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menu.setVisible(false);
+
                 setBounds(tamañoJuego);
+                detenerMusica();
+                j = new Juego(op);
                 j.setVisible(true);
                 add(j);
                 add(j.getPuntuacion());
@@ -87,7 +93,6 @@ public class VentanaPrincipal extends JFrame {
 //                    add(j.getP().getVidas()[i]);
 //                }
                 addKeyListener(j.getKeyListeners()[0]);
-                addKeyListener(j.getKeyListeners()[1]);
                 //addKeyListener(j.getKeyListeners()[2]);
             }
         });
@@ -130,5 +135,14 @@ public class VentanaPrincipal extends JFrame {
 //                setBounds(tamañoMenu);
 //            }
 //        });
+    }
+
+    private static void agregarMusiquita() {
+        audioFondo = new Audio();
+        audioFondo.reproducir("audio.wav");
+    }
+
+    public static void detenerMusica() {
+        audioFondo.stop();
     }
 }

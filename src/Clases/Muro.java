@@ -7,6 +7,7 @@ package Clases;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 /**
@@ -18,6 +19,13 @@ public class Muro extends ObjetoDeJuego {
     public Muro(ImageIcon sp) {
         super();
         sprite = sp;
+        ubic = new Ubicacion();
+    }
+    
+    public Muro(ArrayList<ImageIcon> sprites){
+        super();
+        int rnd= (int)(Math.random()*sprites.size());
+        sprite = sprites.get(rnd);
         ubic = new Ubicacion();
     }
     

@@ -117,6 +117,11 @@ public class Controles implements KeyListener {
         this.teclaIzq = Izq;
         this.teclaDer = Der;
     }
+
+    public void setP(Pacman p) {
+        this.p = p;
+    }
+    
     
 }
 

@@ -32,63 +32,74 @@ public class MovimientoAuto implements ActionListener {
         this.f = f;
 //        t = new Timer(155, this);
         cambiarDireccion();
-        limite = 15;
+        limite = (int) (Math.random() * 15 + 2);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-//        if (t.isRunning()) {
-        //if (contadorDePasos < limite) {
-        if (arriba) {
-            if (f.getPosicion().moverArriba()) {;
-                contadorDePasos++;
-                if (hayColision() && p.tieneVidas()) {
-                    p.reiniciarPacman();
-                    f.reiniciarFantasma();
-                }
-            } else {
-                cambiarDireccion();
+        if (contadorDePasos < limite) {
+            if (hayColision() && p.tieneVidas()) {
+                p.reiniciarPacman();
+                f.reiniciarFantasma();
             }
-        } else if (abajo) {
-            if (f.getPosicion().moverAbajo()) {;
-                contadorDePasos++;
-                if (hayColision() && p.tieneVidas()) {
-                    p.reiniciarPacman();
-                    f.reiniciarFantasma();
+            if (arriba) {
+                if (f.getPosicion().moverArriba()) {;
+                    contadorDePasos++;
+                    if (hayColision() && p.tieneVidas()) {
+                        p.reiniciarPacman();
+                        f.reiniciarFantasma();
+                    }
+                } else {
+                    cambiarDireccion();
                 }
-            } else {
-                cambiarDireccion();
+            } else if (abajo) {
+                if (f.getPosicion().moverAbajo()) {;
+                    contadorDePasos++;
+                    if (hayColision() && p.tieneVidas()) {
+                        p.reiniciarPacman();
+                        f.reiniciarFantasma();
+                    }
+                } else {
+                    cambiarDireccion();
+                }
+
+            } else if (der) {
+                if (f.getPosicion().moverDerecha()) {;
+                    contadorDePasos++;
+                    if (hayColision() && p.tieneVidas()) {
+                        p.reiniciarPacman();
+                        f.reiniciarFantasma();
+                    }
+                } else {
+                    cambiarDireccion();
+                }
+
+            } else if (izq) {
+                if (f.getPosicion().moverIzquierda()) {;
+                    contadorDePasos++;
+                    if (hayColision() && p.tieneVidas()) {
+                        p.reiniciarPacman();
+                        f.reiniciarFantasma();
+                    }
+                } else {
+                    cambiarDireccion();
+                }
+            }
+            if (hayColision() && p.tieneVidas()) {
+                p.reiniciarPacman();
+                f.reiniciarFantasma();
             }
 
-        } else if (der) {
-            if (f.getPosicion().moverDerecha()) {;
-                contadorDePasos++;
-                if (hayColision() && p.tieneVidas()) {
-                    p.reiniciarPacman();
-                    f.reiniciarFantasma();
-                }
-            } else {
-                cambiarDireccion();
-            }
-
-        } else if (izq) {
-            if (f.getPosicion().moverIzquierda()) {;
-                contadorDePasos++;
-                if (hayColision() && p.tieneVidas()) {
-                    p.reiniciarPacman();
-                    f.reiniciarFantasma();
-                }
-            } else {
-                cambiarDireccion();
+            contadorDePasos++;
+        } else {
+            contadorDePasos = 0;
+            limite = (int) (Math.random() * 15 + 1);
+            cambiarDireccion();
+            if (hayColision() && p.tieneVidas()) {
+                p.reiniciarPacman();
+                f.reiniciarFantasma();
             }
         }
-
-//                contadorDePasos++;
-//            } else {
-//                contadorDePasos = 0;
-//                cambiarDireccion();
-//            }
-//        }
     }
 
     private void cambiarDireccion() {

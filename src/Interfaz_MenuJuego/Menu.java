@@ -34,18 +34,10 @@ public class Menu extends JPanel {
         add(botones);
     }
     
-    private void agregarFondo() {
-        ImageIcon ico= new ImageIcon("FondoMenu.jpg");
-        fondo= new JLabel(ico);
-        fondo.setBounds(0, 0, getWidth(), getHeight());
-        fondo.setIcon(new ImageIcon(ico.getImage().getScaledInstance(getWidth()+1, getHeight(),Image.SCALE_SMOOTH)));
-        fondo.setBackground(Color.red);
-        add(fondo);
-    }
     private void agregarF(){
         int x = 0;
         int y = 0;
-        ImageIcon ico = new ImageIcon("fantasmas.jpg");
+        ImageIcon ico = new ImageIcon("imgPanelMenu/fantasmas.jpg");
         JLabel s = new JLabel(ico);
         s.setBounds(x, y, 500, 180);
         s.setIcon(new ImageIcon(ico.getImage().getScaledInstance(500, 180, Image.SCALE_SMOOTH)));
@@ -54,7 +46,7 @@ public class Menu extends JPanel {
     private void agregarM(){
         int x = 290;
         int y = 100;
-        ImageIcon ico = new ImageIcon("miniPacman4.png");
+        ImageIcon ico = new ImageIcon("imgPanelMenu/miniPacman4.png");
         JLabel s = new JLabel(ico);
         s.setBounds(x, y, 100, 50);
         s.setIcon(new ImageIcon(ico.getImage().getScaledInstance(100, 50, Image.SCALE_SMOOTH)));

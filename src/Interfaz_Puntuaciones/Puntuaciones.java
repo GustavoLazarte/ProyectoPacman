@@ -65,7 +65,7 @@ public class Puntuaciones extends JPanel{
     
     private void agregarTitulo() {
         int x,y;
-        ImageIcon ico= new ImageIcon("ScoreT.png");
+        ImageIcon ico= new ImageIcon("imgPanelPuntuaciones/ScoreT.png");
         x = 155;
         y = 5 ;
         titulo = new JLabel(ico);
@@ -76,7 +76,7 @@ public class Puntuaciones extends JPanel{
     private void agregarGif(){
         int x = 150;
         int y = 450;
-        ImageIcon ico = new ImageIcon("pacmanComiendo.gif");      
+        ImageIcon ico = new ImageIcon("imgPanelPuntuaciones/pacmanComiendo.gif");      
         gif = new JLabel(ico);
         gif.setBounds(x ,y, 200, 150);
         add(gif);
@@ -89,7 +89,7 @@ public class Puntuaciones extends JPanel{
     private void agregarStickersT(){
         int x = 15;
         int y = 0;
-        ImageIcon ico = new ImageIcon("pacman13.gif");
+        ImageIcon ico = new ImageIcon("imgPanelPuntuaciones/pacman13.gif");
         JLabel s = new JLabel(ico);
         s.setBounds(x, y, 150, 520);
         add(s);
@@ -97,7 +97,7 @@ public class Puntuaciones extends JPanel{
     private void agregarStickersD(){
         int x = 450;
         int y = 400;
-        ImageIcon ico = new ImageIcon("trofeo.png");
+        ImageIcon ico = new ImageIcon("imgPanelPuntuaciones/trofeo.png");
         JLabel s = new JLabel(ico);
         s.setBounds(x, y, 150, 160);
         s.setIcon(new ImageIcon(ico.getImage().getScaledInstance(150, 160, Image.SCALE_SMOOTH)));
@@ -107,8 +107,8 @@ public class Puntuaciones extends JPanel{
     private void agregarBotonRegresar() {
         int x = 15;
         int y = 550;
-        ImageIcon imgico = new ImageIcon("Regresar.png");
-        ImageIcon imgico2 = new ImageIcon("Regresar.png");
+        ImageIcon imgico = new ImageIcon("imgPanelPuntuaciones/Regresar.png");
+        ImageIcon imgico2 = new ImageIcon("imgPanelPuntuaciones/Regresar.png");
         btn_regresar = new BotonesPersonalizados(x, y, imgico, imgico2);
         btn_regresar.setBounds(x, y, 100, 100);
         add(btn_regresar);

@@ -32,26 +32,33 @@ public class Pacman implements ActionListener {
     private int puntos;
     private Posicion posicion, inicial;
     private boolean vivo;
-    private ImageIcon imgActual;
-    private ArrayList<ImageIcon> imagenes;
-    private JLabel[] vidas;
+    private ImageIcon imgActual, cerrado;
+    private ArrayList<ImageIcon> imagenes , imagenes2;
     private boolean estado;
     private int cantidadVidas;
 
-    public Pacman(ArrayList<ImageIcon> img, Posicion pos, int jug) {
-//        vidas = new JLabel[3];
-//        crearVidas(img.get(0));
+    public Pacman(ArrayList<ImageIcon> img, Posicion pos, Controles c) {
         cantidadVidas = 3;
         estado = true;
         imagenes = img;
         imgActual = img.get(0);
+        cerrado = img.get(4);
         inicial = new Posicion(pos.getX(), pos.getY(), (int)pos.getArea().getWidth(), (int)pos.getArea().getHeight());
         posicion = pos;
-        if (jug == 1) {
-            controles = new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, this);
-        } else if (jug == 2) {
-            controles = new Controles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, this);
-        }
+        controles = c;
+        controles.setP(this);
+        vivo = true;
+    }
+    
+    public Pacman(ArrayList<ImageIcon> img, ArrayList<ImageIcon> img2, Posicion pos, Controles c) {
+        cantidadVidas = 3;
+        estado = true;
+        imagenes = img;
+        imgActual = img.get(0);
+        cerrado = img2.get(0);
+        inicial = new Posicion(pos.getX(), pos.getY(), (int)pos.getArea().getWidth(), (int)pos.getArea().getHeight());
+        posicion = pos;
+        controles = c;
         vivo = true;
     }
 
@@ -59,7 +66,7 @@ public class Pacman implements ActionListener {
         if (estado) {
             g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
         } else {
-            g.drawImage(imagenes.get(4).getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
+            g.drawImage(cerrado.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
         }
         estado = !estado;
     }
@@ -70,6 +77,9 @@ public class Pacman implements ActionListener {
 
     public void setImg(int i) {
         this.imgActual = imagenes.get(i);
+        if(imagenes2 != null){
+            cerrado = imagenes2.get(i);
+        }
     }
 
     public int getPuntos() {
@@ -133,21 +143,5 @@ public class Pacman implements ActionListener {
                 cantidadVidas++;
             }
         }
-    }
-
-    private void crearVidas(ImageIcon v) {
-        ImageIcon vida= new ImageIcon(v.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
-        for (int i = 0; i < vidas.length; i++) {
-            JLabel aux = new JLabel();
-            aux.setOpaque(true);
-            aux.setIcon(vida);
-            aux.setBounds((10+(i*aux.getIcon().getIconWidth())), 500, 25, 25);
-            aux.setVisible(true);
-            vidas[i] = aux;
-        }
-    }
-
-    public JLabel[] getVidas() {
-        return vidas;
     }
 }
