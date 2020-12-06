@@ -33,6 +33,15 @@ public class Comida_Bonus extends Comida {
     }
     
     public void aparecer(){
-        aparecer = true;
+        aparecer = !aparecer;
+    }
+    
+    @Override
+    public int getValor() {
+        if(aparecer){
+            return valor;
+        }
+        
+        return 0;
     }
 }

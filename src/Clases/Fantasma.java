@@ -39,8 +39,12 @@ public class Fantasma {
         }
     }
 
-    public void cambiarEstado() {
-        comible = !comible;
+    public void cambiarFormaComible() {
+        comible = true;
+    }
+    
+    public void cambiarFormaNoComible() {
+        comible = false;
     }
 
     public boolean esComible() {
@@ -60,6 +64,7 @@ public class Fantasma {
     }
     
     public void reiniciarFantasma(){
+        comible = false;
         posicion = new Posicion(inicial.getX(), inicial.getY(), (int)inicial.getArea().getMaxX(), (int)inicial.getArea().getMaxY());
     }
     

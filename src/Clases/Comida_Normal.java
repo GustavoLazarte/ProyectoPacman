@@ -34,6 +34,5 @@ public class Comida_Normal extends Comida {
         ubic.setUbicacion(x, y);
     }
     
-    
 
 }

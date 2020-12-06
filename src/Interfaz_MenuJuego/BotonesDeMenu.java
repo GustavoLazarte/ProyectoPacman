@@ -12,6 +12,7 @@ public class BotonesDeMenu extends JPanel {
     private BotonesPersonalizados btn_OpcionesDeJuego;
     private BotonesPersonalizados btn_Puntuaciones;
     private BotonesPersonalizados btn_Salir;
+    private BotonesPersonalizados btn_Multijugador;
 
     public BotonesDeMenu(int ancho,  int alto) {
         setSize(ancho, alto);
@@ -24,6 +25,7 @@ public class BotonesDeMenu extends JPanel {
         agregarBotonIniciar();
         agregarBotonOpcionesDeJuego();
         agregarBotonVerPuntuaciones();
+        agregarBotonMultijugador();
     }
 
     private void agregarBotonIniciar() {
@@ -73,6 +75,22 @@ public class BotonesDeMenu extends JPanel {
     public BotonesPersonalizados getBtn_Salir() {
         return btn_Salir;
     }
+
+    public BotonesPersonalizados getBtn_Multijugador() {
+        return btn_Multijugador;
+    }
+
+    private void agregarBotonMultijugador() {
+        int x = 300;
+        int y = 360;
+        ImageIcon imgico = new ImageIcon("imgPanelMenu/botonVersus.png");
+        ImageIcon imgico2 = new ImageIcon("imgPanelMenu/botonVersus.png");
+        btn_Multijugador = new BotonesPersonalizados(x, y, imgico, imgico2);
+        btn_Multijugador.setBounds(x, y, 200, 120);
+        add(btn_Multijugador);
+    }
+    
+    
     
     
 }

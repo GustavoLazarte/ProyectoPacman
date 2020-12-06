@@ -6,6 +6,8 @@
 package Interfaz_Juego;
 
 import Clases.Comida;
+import Clases.Comida_Bonus;
+import Clases.Comida_Especial;
 import Clases.Comida_Normal;
 import Clases.Fantasma;
 import Clases.Pacman;
@@ -13,6 +15,7 @@ import Clases.Posicion;
 import Clases.Tablero;
 import Herramientas.Audio;
 import Interfaz_Opciones.Opciones;
+import Interfaz_Puntuaciones.Puntuaciones;
 import Ventana.VentanaPrincipal;
 import java.awt.Color;
 import java.awt.Font;
@@ -45,75 +48,24 @@ public class Juego extends JPanel {
     private Tablero tab;
     private Pacman p;
     private Timer timer;
-    private int estado, nivel;
+    private int estado, nivel, contadorComida;
     private JLabel puntuacion;
     private Color colorDeFondo;
     private Rectangle tamaño;
     private Audio audioDeComer, audioDeFondo, audioInicial;
     private Fantasma[] fantasmas;
-    private boolean hayCambio;
     private JLabel etiqueta;
     private JLabel etiquetaDeAviso;
     private Font fuente;
     private int contador;
+    private JPanel panelRegistrador;
+    private Puntuaciones pun;
 
-    public Juego(Opciones op) {
-        nivel = 1;
-        nivel1 = getNivel1();
-        audioInicial = new Audio();
-        hayCambio = true;
-        audioDeComer = new Audio();
-        audioDeFondo = new Audio();
-        colorDeFondo = new Color(12, 20, 20);
-        tamaño = new Rectangle(10, 40, 480, 560);
-        fantasmas = new Fantasma[4];
-        agregarScore();
-        agregarEtiquetaDeAviso();
-        setLayout(null);
-        setOpaque(false);
-        setBackground(colorDeFondo);
-        setBounds(tamaño);
+    public Juego(Opciones op, Puntuaciones p) {
+        cambiarAspectoPanel();
+        instanciarVariablesJuego(op);
+        instanciarHerramientasDeJuego();
         estado = NO_INICIADO;
-        ArrayList<ImageIcon> img = op.getApariencia();
-        ArrayList<ImageIcon> imagenes = new ArrayList<>();
-        cargarImagenes(img, imagenes, 0, 4);
-        ArrayList<ImageIcon> imagenesTab = new ArrayList<>();
-        cargarImagenes(img, imagenesTab, 5, 9);
-//        ArrayList<ImageIcon> imagenes = new ArrayList<>();
-//        imagenes.add(new ImageIcon("skinNavidad/pacmanDer.png"));
-//        imagenes.add(new ImageIcon("skinNavidad/pacmanIzq.png"));
-//        imagenes.add(new ImageIcon("skinNavidad/pacmanArri.png"));
-//        imagenes.add(new ImageIcon("skinNavidad/pacmanAba.png"));
-//        //imagenes.add(new ImageIcon("skinNavidad/pacmanCerrado.png"));
-//        ArrayList<ImageIcon> imagenesTab = new ArrayList<>();
-//        ImageIcon cn = new ImageIcon("skinNavidad/Comida.png");
-//        ImageIcon ce = new ImageIcon("skinNavidad/Suero2.png");
-//        ImageIcon cb = new ImageIcon("skinNavidad/Comida 2.png");
-//        ImageIcon m = new ImageIcon("skinNavidad/Muro.png");
-//        ImageIcon s = null;
-//        imagenesTab.add(cn);
-//        imagenesTab.add(ce);
-//        imagenesTab.add(cb);
-//        imagenesTab.add(s);
-//        imagenesTab.add(m);
-//        ArrayList<ImageIcon> imagenesMuros = new ArrayList<>();
-//        ImageIcon m1 = new ImageIcon("skinNavidad/bloque celeste.png");
-//        ImageIcon m2 = new ImageIcon("skinNavidad/bloque morado.png");
-//        ImageIcon m3 = new ImageIcon("skinNavidad/bloque naranja.png");
-//        ImageIcon m4 = new ImageIcon("skinNavidad/bloque plomo.png");
-//        ImageIcon m5 = new ImageIcon("skinNavidad/bloque rojo.png");
-//        ImageIcon m6 = new ImageIcon("skinNavidad/bloque verde.png");
-//        ImageIcon m7 = new ImageIcon("skinNavidad/bloque rosa.png");
-//        imagenesMuros.add(m1);
-//        imagenesMuros.add(m2);
-//        imagenesMuros.add(m3);
-//        imagenesMuros.add(m4);
-//        imagenesMuros.add(m5);
-//        imagenesMuros.add(m6);
-//        imagenesMuros.add(m7);
-        tab = new Tablero(imagenesTab, nivel1);
-        p = new Pacman(imagenes, new Posicion(260, 280, getWidth(), getHeight()), op.getControl(1));
-        agregarFantasmas(img.get(10), img.get(11));
         iniciarJuego();
         setFocusable(true);
 
@@ -126,7 +78,7 @@ public class Juego extends JPanel {
     }
 
     private void iniciarJuego() {
-        VentanaPrincipal.detenerMusica();
+        //VentanaPrincipal.detenerMusica();
         audioInicial.reproducir("audio.wav");
         darAccion();
         obtenerControles();
@@ -160,6 +112,13 @@ public class Juego extends JPanel {
                             estado = TERMINADO;
                         }
                     }
+                    if(contadorComida >= 120 && contadorComida % 120== 0){
+                        tab.aparecerFrutitas();
+                        contadorComida++;
+                    }else{
+                        contadorComida++;
+                        System.out.println(contadorComida);
+                    }
                     repaint();
                 } else if (estado == TERMINADO) {
                     quitarAcciones();
@@ -180,6 +139,7 @@ public class Juego extends JPanel {
         if (!tab.hayComida() && nivel == 3) {
             etiquetaDeAviso.setText("Winner");
             etiquetaDeAviso.setVisible(true);
+            
         } else {
             etiquetaDeAviso.setText("Game Over");
             etiquetaDeAviso.setVisible(true);
@@ -199,7 +159,16 @@ public class Juego extends JPanel {
         }
 
         Comida aux = (Comida) tab.getElTablero()[pacy / 20][pacx / 20];
-        p.comer(aux.getValor());
+        if(aux instanceof Comida_Bonus){
+            Comida_Bonus frutitas = (Comida_Bonus)(aux);
+            p.comer(frutitas.getValor());
+        }else if (aux instanceof Comida_Especial) {
+            Comida_Especial suero = (Comida_Especial) aux;
+            suero.cambiarEstado(fantasmas);
+            p.comer(suero.getValor());
+        }else{
+            p.comer(aux.getValor());
+        }
         puntuacion.setText("" + p.getPuntos());
         tab.getElTablero()[pacy / 20][pacx / 20] = null;
     }
@@ -230,8 +199,9 @@ public class Juego extends JPanel {
 
     private void iniciarMovimientos() {
         for (int i = 0; i < fantasmas.length; i++) {
-//            fantasmas[i].getMov().iniciarMovimiento();
-            fantasmas[i].getMov().setP(p);
+            if(fantasmas[i].getMov().getP() == null){
+                fantasmas[i].getMov().setP(p);
+            }
         }
     }
 
@@ -253,6 +223,16 @@ public class Juego extends JPanel {
         puntuacion.setFont(fuente);
         puntuacion.setForeground(colorDeFondo.WHITE);
         puntuacion.setVisible(true);
+        
+        p.getEtiquetaVidas().setBounds(10, 610, 100, 20);
+        p.getEtiquetaVidas().setFont(fuente);
+        p.getEtiquetaVidas().setForeground(Color.YELLOW);
+        
+        p.getEtiquetaCantidad().setBounds(100, 610, 100, 20);
+        p.getEtiquetaCantidad().setFont(fuente);
+        p.getEtiquetaCantidad().setForeground(colorDeFondo.WHITE);
+        
+        
     }
 
     public JLabel getEtiqueta() {
@@ -264,7 +244,7 @@ public class Juego extends JPanel {
     }
 
     private void agregarEtiquetaDeAviso() {
-        etiquetaDeAviso = new JLabel("Listo!");
+        etiquetaDeAviso = new JLabel("READY!");
         etiquetaDeAviso.setFont(new Font("Megaman 2", Font.BOLD, 15));
         etiquetaDeAviso.setOpaque(false);
         etiquetaDeAviso.setBounds(170, 280, 250, 25);
@@ -291,7 +271,6 @@ public class Juego extends JPanel {
 
     private void avanzarNivel() {
         quitarAcciones();
-        reiniciarPosiciones();
         nivel++;
         switch (nivel) {
             case 2:
@@ -302,14 +281,49 @@ public class Juego extends JPanel {
                 tab.setElTablero(nivel3);
                 break;
         }
+        reiniciarPosiciones();
         estado = NO_INICIADO;
         contador = 0;
         audioDeFondo.stop();
-        etiquetaDeAviso.setText("Listo!");
+        etiquetaDeAviso.setText("READY!");
         etiquetaDeAviso.setVisible(true);
     }
 
-    public int[][] getNivel2() {
+    public int[][] getNivel3() {
+        int[][] t2 = {
+            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+            {0, 1, 9, 7, 7, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 7, 7, 9, 1, 0},
+            {0, 1, 7, 1, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 1, 7, 1, 0},
+            {0, 1, 7, 7, 7, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 7, 7, 7, 1, 0},
+            {1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1},
+            {8, 7, 7, 7, 7, 7, 1, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 7, 7, 7, 7, 7, 8},
+            {1, 1, 1, 1, 1, 7, 1, 7, 7, 1, 1, 1, 1, 1, 1, 7, 7, 1, 7, 1, 1, 1, 1, 1},
+            {0, 1, 1, 1, 1, 7, 1, 7, 1, 1, 9, 7, 7, 9, 1, 1, 7, 7, 7, 1, 1, 1, 1, 0},
+            {0, 1, 1, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 7, 7, 1, 7, 7, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 7, 1, 1, 0},
+            {0, 1, 7, 7, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 7, 7, 1, 0},
+            {0, 1, 7, 1, 1, 1, 1, 7, 1, 7, 1, 0, 0, 1, 7, 1, 7, 1, 1, 1, 1, 7, 1, 0},
+            {0, 1, 7, 7, 7, 7, 7, 7, 1, 7, 1, 0, 0, 1, 7, 1, 7, 7, 7, 7, 7, 7, 1, 0},
+            {0, 1, 7, 1, 1, 7, 1, 7, 1, 7, 7, 1, 1, 7, 7, 1, 7, 1, 7, 1, 1, 7, 1, 0},
+            {0, 1, 7, 1, 1, 7, 7, 7, 1, 1, 7, 7, 7, 7, 1, 1, 7, 7, 7, 1, 1, 7, 1, 0},
+            {0, 1, 7, 1, 1, 7, 1, 7, 7, 1, 7, 1, 1, 7, 1, 7, 7, 1, 7, 1, 1, 7, 1, 0},
+            {0, 1, 7, 7, 7, 7, 1, 1, 7, 7, 7, 0, 0, 7, 7, 7, 1, 1, 7, 7, 7, 7, 1, 0},
+            {0, 1, 1, 7, 1, 7, 1, 7, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 7, 7, 7, 1, 1, 9, 7, 7, 9, 1, 1, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 7, 1, 1, 1, 7, 7, 1, 1, 7, 7, 7, 1, 7, 7, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 7, 1, 1, 7, 7, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 0},
+            {1, 1, 1, 7, 7, 7, 7, 7, 7, 1, 1, 7, 7, 7, 1, 7, 7, 7, 7, 7, 7, 1, 1, 1},
+            {8, 7, 1, 1, 1, 1, 7, 1, 1, 1, 7, 7, 1, 7, 1, 1, 1, 7, 1, 1, 1, 1, 7, 8},
+            {1, 7, 7, 1, 1, 7, 7, 7, 1, 1, 7, 1, 1, 7, 1, 1, 7, 7, 7, 1, 1, 7, 7, 1},
+            {1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 1, 1, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1},
+            {0, 1, 7, 1, 1, 7, 7, 7, 1, 1, 7, 1, 1, 7, 1, 1, 7, 7, 7, 1, 1, 7, 1, 0},
+            {0, 1, 7, 7, 7, 7, 1, 1, 1, 9, 7, 7, 7, 7, 9, 1, 1, 1, 7, 7, 7, 7, 1, 0},
+            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
+
+        return t2;
+    }
+
+    public int[][] getNivel1a() {
         int[][] t = {
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
             {0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
@@ -359,7 +373,7 @@ public class Juego extends JPanel {
             {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
             {1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-            {8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 8},
+            {8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 8},
             {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1},
             {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 9, 1, 0},
             {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
@@ -377,6 +391,39 @@ public class Juego extends JPanel {
         return t;
     }
 
+    public int[][] getNivel2() {
+        int[][] t = {
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1},
+            {1, 7, 1, 1, 1, 1, 7, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 1, 7, 1, 1, 1, 7, 1},
+            {1, 7, 1, 1, 1, 1, 7, 7, 7, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1},
+            {8, 7, 7, 7, 7, 7, 7, 1, 7, 7, 7, 9, 7, 7, 7, 7, 1, 7, 1, 1, 1, 1, 7, 8},
+            {1, 7, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 1, 7, 1, 1, 7, 7, 1, 1, 9, 7, 1},
+            {1, 7, 9, 1, 1, 7, 7, 7, 7, 7, 1, 1, 1, 1, 7, 7, 7, 7, 1, 1, 1, 1, 7, 1},
+            {1, 7, 1, 1, 1, 1, 7, 1, 1, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 7, 7, 1},
+            {1, 7, 7, 7, 7, 7, 7, 1, 1, 7, 1, 7, 1, 7, 1, 7, 1, 1, 7, 7, 7, 7, 1, 1},
+            {1, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 1, 1, 1},
+            {0, 0, 0, 0, 0, 1, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 1, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 1, 7, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 7, 1, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 1, 7, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 7, 7, 1, 0, 0, 0, 0},
+            {1, 1, 1, 1, 1, 1, 7, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 7, 1, 1, 1, 1, 1},
+            {8, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 8},
+            {1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 1, 1},
+            {0, 0, 0, 0, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 0, 0, 0, 0},
+            {0, 0, 0, 0, 1, 7, 1, 7, 1, 1, 7, 1, 1, 7, 1, 1, 7, 1, 7, 1, 0, 0, 0, 0},
+            {1, 1, 1, 1, 1, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 1, 1, 1, 1, 1},
+            {8, 7, 7, 7, 7, 7, 1, 1, 7, 7, 9, 1, 1, 9, 7, 7, 1, 1, 7, 7, 7, 7, 7, 8},
+            {1, 7, 1, 7, 1, 7, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 7, 1, 7, 1},
+            {1, 7, 1, 1, 1, 7, 1, 1, 7, 7, 1, 1, 1, 1, 7, 7, 1, 1, 7, 1, 1, 1, 7, 1},
+            {1, 7, 7, 9, 1, 7, 1, 1, 7, 1, 7, 1, 1, 7, 1, 7, 1, 1, 7, 1, 9, 7, 7, 1},
+            {1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1},
+            {8, 7, 7, 7, 1, 1, 7, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 7, 1, 1, 7, 7, 7, 8},
+            {1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1},
+            {1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1},
+            {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},};
+        return t;
+    }
+
     private void añadirAcciones() {
         timer.addActionListener(p);
         timer.addActionListener(fantasmas[0].getMov());
@@ -386,9 +433,69 @@ public class Juego extends JPanel {
     }
 
     private void quitarAcciones() {
-        for (int i = 0; i < timer.getActionListeners().length; i++) {
-            timer.removeActionListener(timer.getActionListeners()[i]);
-        }
+        timer.removeActionListener(p);
+        timer.removeActionListener(fantasmas[0].getMov());
+        timer.removeActionListener(fantasmas[1].getMov());
+        timer.removeActionListener(fantasmas[2].getMov());
+        timer.removeActionListener(fantasmas[3].getMov());
+    }
+
+    private void instanciarVariablesJuego(Opciones op) {
+        nivel = 1;
+        nivel1 = getNivel1();
+        fantasmas = new Fantasma[4];
+        ArrayList<ImageIcon> img = op.getApariencia();
+        ArrayList<ImageIcon> imagenes = new ArrayList<>();
+        cargarImagenes(img, imagenes, 0, 4);
+        ArrayList<ImageIcon> imagenesTab = new ArrayList<>();
+        cargarImagenes(img, imagenesTab, 5, 9);
+        tab = new Tablero(imagenesTab, nivel1);
+        p = new Pacman(imagenes, new Posicion(260, 280, getWidth(), getHeight()), op.getControl(1));
+        agregarFantasmas(img.get(10), img.get(11));
+    }
+
+    private void cambiarAspectoPanel() {
+        colorDeFondo = new Color(12, 20, 20);
+        tamaño = new Rectangle(10, 40, 480, 560);
+        setLayout(null);
+        setOpaque(false);
+        setBackground(colorDeFondo);
+        setBounds(tamaño);
+        setFocusable(true);
+    }
+
+    private void instanciarHerramientasDeJuego() {
+        audioInicial = new Audio();
+        audioDeComer = new Audio();
+        audioDeFondo = new Audio();
+        agregarPanelAnotador();
+        agregarScore();
+        agregarEtiquetaDeAviso();
+    }
+    
+    public JLabel agregarEtiquetaDeVida(){
+        return p.getEtiquetaVidas();
+    }
+    
+    public JLabel agregarEtiquetaDeCantidad(){
+        return p.getEtiquetaCantidad();
+    }
+
+    private void agregarPanelAnotador() {
+        panelRegistrador = new JPanel();
+        panelRegistrador.setBackground(colorDeFondo);
+        panelRegistrador.setOpaque(true);
+        panelRegistrador.setBounds(getWidth()/3, getHeight()/3, 200, 100);
+        JTextField text = new JTextField();
+        text.setOpaque(true);
+        text.setBackground(Color.red);
+        text.setBounds(panelRegistrador.getWidth()/8, panelRegistrador.getHeight()/3, 200, 30);
+        text.setVisible(true);
+        panelRegistrador.add(text);
+        
+        
+        panelRegistrador.setVisible(true);
+        add(panelRegistrador);
     }
 
 }

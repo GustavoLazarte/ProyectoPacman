@@ -3,6 +3,7 @@ package Ventana;
 import Herramientas.Audio;
 import Herramientas.Controles;
 import Interfaz_Juego.Juego;
+import Interfaz_Juego.JuegoMulti;
 import Interfaz_MenuJuego.Menu;
 import Interfaz_Opciones.Opciones;
 import Interfaz_PanelInicio.Panel_Inicio;
@@ -35,6 +36,7 @@ public class VentanaPrincipal extends JFrame {
     private Puntuaciones p;
     private static Audio audioFondo;
     private final Toolkit miPc;
+    private JuegoMulti jm;
 
     public VentanaPrincipal() {
         Controles c1 = new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null);
@@ -48,6 +50,8 @@ public class VentanaPrincipal extends JFrame {
         menu.setVisible(false);
         inicio = new Panel_Inicio();
         agregarMusiquita();
+        setTitle("Pacman (2020)");
+        setIconImage(new ImageIcon("icoVentana.jpg").getImage());
         setLayout(null);
         getContentPane().setBackground(Color.BLACK);
         setBounds(tamañoMenu);
@@ -84,11 +88,13 @@ public class VentanaPrincipal extends JFrame {
 
                 setBounds(tamañoJuego);
                 detenerMusica();
-                j = new Juego(op);
+                j = new Juego(op,p);
                 j.setVisible(true);
                 add(j);
                 add(j.getPuntuacion());
                 add(j.getEtiqueta());
+                add(j.agregarEtiquetaDeVida());
+                add(j.agregarEtiquetaDeCantidad());
 //                for (int i = 0; i < j.getP().getVidas().length; i++) {
 //                    add(j.getP().getVidas()[i]);
 //                }
@@ -102,7 +108,7 @@ public class VentanaPrincipal extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 menu.setVisible(false);
                 setBounds(tamañoMenu);
-                op = new Opciones(new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null), new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null), menu);
+                op = new Opciones(new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null), new Controles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, null), menu);
                 op.setVisible(true);
 
                 add(op);
@@ -117,6 +123,27 @@ public class VentanaPrincipal extends JFrame {
                 //setBounds(tamañoJuego);
                 p.setVisible(true);
                 add(p);
+            }
+        });
+        
+        menu.getBotones().getBtn_Multijugador().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menu.setVisible(false);
+                setBounds(tamañoJuego);
+                detenerMusica();
+                jm = new JuegoMulti(op);
+                jm.setVisible(true);
+                
+                add(jm);
+                add(jm.getEtiquetaj1());
+                add(jm.getEtiquetaj2());
+                add(jm.getPuntuacionj1());
+                add(jm.getPuntuacionj2());
+                
+                addKeyListener(jm.getKeyListeners()[0]);
+                addKeyListener(jm.getKeyListeners()[1]);
+                
             }
         });
         p.getBtn_regresar().addActionListener(new ActionListener() {

@@ -36,9 +36,14 @@ public class Pacman implements ActionListener {
     private ArrayList<ImageIcon> imagenes , imagenes2;
     private boolean estado;
     private int cantidadVidas;
+    private JLabel etiquetaVidas, etiquetaCantidad ;
 
     public Pacman(ArrayList<ImageIcon> img, Posicion pos, Controles c) {
+        etiquetaVidas = new JLabel("LIVES");
         cantidadVidas = 3;
+        etiquetaVidas.setVisible(true);
+        etiquetaCantidad = new JLabel(""+cantidadVidas);
+        etiquetaCantidad.setVisible(true);
         estado = true;
         imagenes = img;
         imgActual = img.get(0);
@@ -109,6 +114,8 @@ public class Pacman implements ActionListener {
     public void morir() {
         vivo= false;
         cantidadVidas--;
+        etiquetaCantidad.setText(" "+ cantidadVidas);
+        etiquetaCantidad.repaint();
     }
     
     public void reiniciarPacman(){
@@ -144,4 +151,14 @@ public class Pacman implements ActionListener {
             }
         }
     }
+
+    public JLabel getEtiquetaVidas() {
+        return etiquetaVidas;
+    }
+
+    public JLabel getEtiquetaCantidad() {
+        return etiquetaCantidad;
+    }
+    
+    
 }

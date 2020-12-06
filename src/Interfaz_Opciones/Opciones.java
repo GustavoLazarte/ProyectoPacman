@@ -538,6 +538,7 @@ public class Opciones extends JPanel{
          lista.add(new ImageIcon("apariencias/" + direccion + "Muro.png"));
         
         lista.add(new ImageIcon("apariencias/" + direccion + "Fantasma.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "FantasmaComible.gif"));
 
         if(!esAnimado){
             lista.add(new ImageIcon("apariencias/" + direccion + "pacmanCerrado.png"));

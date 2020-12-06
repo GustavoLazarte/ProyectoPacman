@@ -34,4 +34,10 @@ public class Comida_Especial extends Comida {
         ubic.setUbicacion(x, y);
     }
 
+    public void cambiarEstado(Fantasma[] fantasmas){
+        for (int i = 0; i < fantasmas.length; i++) {
+            fantasmas[i].cambiarFormaComible();
+        }
+    }
+    
 }

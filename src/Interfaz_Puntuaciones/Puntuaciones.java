@@ -153,6 +153,12 @@ public class Puntuaciones extends JPanel{
             }*/
             add(puntaje);
         }
-     }
+    }
+    
+    private boolean sePuedeAñadir(Puntuacion otra){
+        //if((puntuaciones.get(puntuaciones.size()-1).compareTo(otra)== 1) && (puntuaciones.size() <= limite) ){}
+        
+        return false;
+    }
     
 }
