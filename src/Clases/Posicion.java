@@ -76,10 +76,6 @@ public class Posicion {
 
                 }
             } else {
-                if (((x + aumento) + aumento / 20) < filas) {
-                    return true;
-                }
-                System.out.println("estoy fuera der");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println(x + " " + y + " derecha");
@@ -99,10 +95,6 @@ public class Posicion {
                     }
                 }
             } else {
-                if (((x - aumento) / 20) > 0) {
-                    return true;
-                }
-                System.out.println("estoy fuera izq");
             }
         } catch (Exception e) {
             System.out.println(x + " " + y + " izquierda");
@@ -122,10 +114,6 @@ public class Posicion {
                     }
                 }
             } else {
-                if (((y + aumento) + aumento / 20) < columnas) {
-                    return true;
-                }
-                System.out.println("estoy fuera aba");
             }
         } catch (Exception e) {
             System.out.println(x + " " + y + " abajo");
@@ -146,10 +134,6 @@ public class Posicion {
                 }
 
             } else {
-                if (((y - aumento) / 20) > 0) {
-                    return true;
-                }
-                System.out.println("estoy fuera arri");
             }
         } catch (Exception e) {
             System.out.println(x + " " + y + " arriba");

@@ -113,7 +113,6 @@ public class MovimientoAuto implements ActionListener {
                     abajo = false;
                     izq = false;
                     der = false;
-                    System.out.println("la imagen" +(2 + 4*(f.getNumFantasma()-1)));
                     f.setImg(2 + 4*(f.getNumFantasma()-1));
                     break;
                 }
@@ -222,7 +221,6 @@ public class MovimientoAuto implements ActionListener {
             contadorDeReInicio = 0;
         } else {
             contadorDeReInicio++;
-            System.out.println(contadorDeReInicio);
         }
     }
 

@@ -141,14 +141,12 @@ public class Juego extends JPanel {
                             contadorComida = 0;
                         }
                     }
-//                    repaint();
                 } else if (estado == TERMINADO) {
                     quitarAcciones();
                     terminarJuego();
                     timer.stop();
                 } else if (estado == NO_INICIADO) {
                     activarJuego();
-//                    repaint();
                 }
 
             }
@@ -293,7 +291,6 @@ public class Juego extends JPanel {
             contador = -1;
         } else if (contador > -1) {
             contador++;
-            System.out.println(contador);
         }
     }
 
@@ -306,6 +303,7 @@ public class Juego extends JPanel {
                 tab.setElTablero(nivel2);
                 break;
             case 3:
+                nivel3 = getNivel3();
                 tab.setElTablero(nivel3);
                 break;
         }
@@ -382,7 +380,6 @@ public class Juego extends JPanel {
             {0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
             {0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
-        System.out.println(t.length + " " + t[0].length);
         return t;
     }
 

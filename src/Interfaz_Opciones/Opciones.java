@@ -147,7 +147,7 @@ public class Opciones extends JPanel{
         boton.setForeground(Color.white);
         boton.setBackground(Color.black);
         boton.setBounds(posX, posY, sizeX, sizeY);
-        boton.setFocusable(false);
+        boton.setFocusable(true);
         if(!conBordes){
             boton.setBorder(null);
         }

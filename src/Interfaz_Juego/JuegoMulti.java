@@ -170,7 +170,6 @@ public class JuegoMulti extends JPanel {
             contador = -1;
         } else if (contador > -1) {
             contador++;
-            System.out.println(contador);
         }
     }
 
@@ -370,7 +369,6 @@ public class JuegoMulti extends JPanel {
             {0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
             {0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
-        System.out.println(t.length + " " + t[0].length);
         return t;
     }
 
