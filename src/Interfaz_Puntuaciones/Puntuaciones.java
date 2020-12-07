@@ -131,7 +131,7 @@ public class Puntuaciones extends JPanel {
     }
 
     public void mostrarPuntuaciones() {
-        int a = 200;
+        int a = 180;
         int b = 70;
         Puntuacion[] puntuacionesA = new Puntuacion[10];
         for (int j = 0; j < puntuaciones.size(); j++) {

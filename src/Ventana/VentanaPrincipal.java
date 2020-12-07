@@ -150,13 +150,12 @@ public class VentanaPrincipal extends JFrame {
             
             removeKeyListener(j.getKeyListeners()[0]);
             remove(j);
+            j = null;
             setBounds(tamañoMenu);
         }
 
         if (jm != null) {
-            remove(jm);
-            jm.setVisible(false);
-            
+            jm.setVisible(true);
             remove(jm.getEtiquetaj1());
             remove(jm.getEtiquetaj2());
             remove(jm.getPuntuacionj1());
@@ -165,6 +164,8 @@ public class VentanaPrincipal extends JFrame {
 
             removeKeyListener(jm.getKeyListeners()[0]);
             removeKeyListener(jm.getKeyListeners()[1]);
+            jm = null;
+            setBounds(tamañoMenu);
         }
         inicio.getBtn_inicio().doClick();
     }

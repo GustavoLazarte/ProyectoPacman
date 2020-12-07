@@ -105,8 +105,8 @@ public class Juego extends JPanel {
     }
 
     public void paint(Graphics g) {
-        tab.paint(g);
         super.paint(g);
+        tab.paint(g);
         fantasmas[0].paint(g);
         fantasmas[1].paint(g);
         fantasmas[2].paint(g);
@@ -158,7 +158,7 @@ public class Juego extends JPanel {
     }
 
     private void terminarJuego() {
-        if (!tab.hayComida() && nivel == 3) {
+        if (!tab.hayComida() && nivel > 3) {
             etiquetaDeAviso.setText("Winner");
             etiquetaDeAviso.setVisible(true);
         } else {
@@ -316,6 +316,7 @@ public class Juego extends JPanel {
         etiquetaDeAviso.setText("READY!");
         etiquetaDeAviso.setVisible(true);
     }
+    
 
     public int[][] getNivel3() {
         int[][] t2 = {

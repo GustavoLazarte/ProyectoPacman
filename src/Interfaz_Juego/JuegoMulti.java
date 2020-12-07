@@ -48,12 +48,13 @@ public class JuegoMulti extends JPanel {
     private Color colorDeFondo;
     private Rectangle tamaño;
     private Audio audioDeComer, audioDeFondo, audioInicial;
-    private JLabel etiquetaj1, etiquetaj2 ;
+    private JLabel etiquetaj1, etiquetaj2;
     private JLabel etiquetaDeAviso;
     private Font fuente;
     private int contador;
     private VentanaPrincipal padre;
     private Thread hilo;
+    private int contadorDeSalida;
 
     public JuegoMulti(Opciones op, VentanaPrincipal padre) {
         this.padre = padre;
@@ -64,7 +65,7 @@ public class JuegoMulti extends JPanel {
         iniciarJuego();
         setFocusable(true);
     }
-    
+
     public void paint(Graphics g) {
         tab.paint(g);
         super.paint(g);
@@ -110,16 +111,17 @@ public class JuegoMulti extends JPanel {
                         if (nivel < 3) {
                             avanzarNivel();
                         } else {
+                            declararGanador();
                             estado = TERMINADO;
                         }
                     }
-                    if ( tab.hayComnidaBonus() && contadorComida >= 120 && contadorComida % 120 == 0) {
+                    if (tab.hayComnidaBonus() && contadorComida >= 120 && contadorComida % 120 == 0) {
                         tab.aparecerFrutitas();
                         contadorComida++;
                     } else {
                         if (tab.hayComnidaBonus()) {
                             contadorComida++;
-                        }else{
+                        } else {
                             contadorComida = 0;
                         }
                     }
@@ -138,7 +140,20 @@ public class JuegoMulti extends JPanel {
         timer.start();
 
     }
-    
+
+    public void declararGanador() {
+        if (p.getPuntos() > p2.getPuntos()) {
+            etiquetaDeAviso.setText("Winner J1 ");
+            etiquetaDeAviso.setVisible(true);
+        } else if (p.getPuntos() < p2.getPuntos()) {
+            etiquetaDeAviso.setText("Winner J2 ");
+            etiquetaDeAviso.setVisible(true);
+        } else {
+            etiquetaDeAviso.setText("DRAW! ");
+            etiquetaDeAviso.setVisible(true);
+        }
+    }
+
     public void activarJuego() {
         if (contador == 35) {
             etiquetaDeAviso.setVisible(false);
@@ -154,7 +169,7 @@ public class JuegoMulti extends JPanel {
             System.out.println(contador);
         }
     }
-    
+
     private void avanzarNivel() {
         quitarAcciones();
         nivel++;
@@ -176,21 +191,15 @@ public class JuegoMulti extends JPanel {
         etiquetaDeAviso.setText("READY!");
         etiquetaDeAviso.setVisible(true);
     }
-    
+
     private void terminarJuego() {
-        if (p.getPuntos() > p2.getPuntos()) {
-            etiquetaDeAviso.setText("Winner J1 ");
-            etiquetaDeAviso.setVisible(true);
-        } else if(p.getPuntos() < p2.getPuntos()){
-            etiquetaDeAviso.setText("Winner J2 ");
-            etiquetaDeAviso.setVisible(true);
+        if (contadorDeSalida == 35) {
+            hilo.stop();
+            audioDeFondo.stop();
+            padre.salirDelJuego();
         }else{
-            etiquetaDeAviso.setText("DRAW! ");
-            etiquetaDeAviso.setVisible(true);
+            contadorDeSalida++;
         }
-        hilo.stop();
-        audioDeFondo.stop();
-        padre.salirDelJuego();
     }
 
     private void comerJ1() {
@@ -285,7 +294,7 @@ public class JuegoMulti extends JPanel {
         etiquetaDeAviso.setFont(new Font("Megaman 2", Font.BOLD, 15));
         etiquetaDeAviso.setOpaque(false);
         etiquetaDeAviso.setBounds(170, 240, 250, 25);
-        etiquetaDeAviso.setForeground(Color.BLACK);
+        etiquetaDeAviso.setForeground(Color.YELLOW);
         etiquetaDeAviso.setVisible(true);
         add(etiquetaDeAviso);
     }
@@ -297,8 +306,7 @@ public class JuegoMulti extends JPanel {
         etiquetaj1.setFont(fuente);
         etiquetaj1.setForeground(colorDeFondo.YELLOW);
         etiquetaj1.setVisible(true);
-        
-        
+
         p.getPuntuacion().setBounds(140, 10, 120, 20);
         p.getPuntuacion().setFont(fuente);
         p.getPuntuacion().setForeground(colorDeFondo.WHITE);
@@ -360,7 +368,7 @@ public class JuegoMulti extends JPanel {
         System.out.println(t.length + " " + t[0].length);
         return t;
     }
-    
+
     public int[][] getNivel3() {
         int[][] t2 = {
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
@@ -394,7 +402,7 @@ public class JuegoMulti extends JPanel {
 
         return t2;
     }
-    
+
     public int[][] getNivel2() {
         int[][] t = {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -447,6 +455,5 @@ public class JuegoMulti extends JPanel {
     public JLabel getEtiquetaDeAviso() {
         return etiquetaDeAviso;
     }
-    
-    
+
 }
