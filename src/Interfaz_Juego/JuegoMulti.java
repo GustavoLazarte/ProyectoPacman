@@ -17,6 +17,7 @@ import static Interfaz_Juego.Juego.EN_CURSO;
 import static Interfaz_Juego.Juego.NO_INICIADO;
 import static Interfaz_Juego.Juego.TERMINADO;
 import Interfaz_Opciones.Opciones;
+import Ventana.VentanaPrincipal;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -26,6 +27,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -46,12 +48,15 @@ public class JuegoMulti extends JPanel {
     private Color colorDeFondo;
     private Rectangle tamaño;
     private Audio audioDeComer, audioDeFondo, audioInicial;
-    private JLabel etiquetaj1, etiquetaj2, puntuacionj1, puntuacionj2;
+    private JLabel etiquetaj1, etiquetaj2 ;
     private JLabel etiquetaDeAviso;
     private Font fuente;
     private int contador;
+    private VentanaPrincipal padre;
+    private Thread hilo;
 
-    public JuegoMulti(Opciones op) {
+    public JuegoMulti(Opciones op, VentanaPrincipal padre) {
+        this.padre = padre;
         cambiarAspectoPanel();
         instanciarVariablesJuego(op);
         instanciarHerramientasDeJuego();
@@ -61,7 +66,6 @@ public class JuegoMulti extends JPanel {
     }
     
     public void paint(Graphics g) {
-
         tab.paint(g);
         super.paint(g);
         p.paint(g);
@@ -74,6 +78,20 @@ public class JuegoMulti extends JPanel {
         audioInicial.reproducir("audio.wav");
         darAccion();
         obtenerControles();
+        hilo = new Thread() {
+            public void run() {
+                while (estado != TERMINADO) {
+                    repaint();
+                    try {
+                        //Paint Velocity 
+                        Thread.sleep(25);
+                    } catch (Exception ex) {
+                        System.out.println("error in graphics engine: " + ex.getMessage());
+                    }
+                }
+            }
+        };
+        hilo.start();
     }
 
     private void darAccion() {
@@ -95,12 +113,15 @@ public class JuegoMulti extends JPanel {
                             estado = TERMINADO;
                         }
                     }
-                    if (contadorComida >= 120 && contadorComida % 120 == 0) {
+                    if ( tab.hayComnidaBonus() && contadorComida >= 120 && contadorComida % 120 == 0) {
                         tab.aparecerFrutitas();
                         contadorComida++;
                     } else {
-                        contadorComida++;
-                        System.out.println(contadorComida);
+                        if (tab.hayComnidaBonus()) {
+                            contadorComida++;
+                        }else{
+                            contadorComida = 0;
+                        }
                     }
                     repaint();
                 } else if (estado == TERMINADO) {
@@ -167,6 +188,9 @@ public class JuegoMulti extends JPanel {
             etiquetaDeAviso.setText("DRAW! ");
             etiquetaDeAviso.setVisible(true);
         }
+        hilo.stop();
+        audioDeFondo.stop();
+        padre.salirDelJuego();
     }
 
     private void comerJ1() {
@@ -187,7 +211,6 @@ public class JuegoMulti extends JPanel {
         } else {
             p.comer(aux.getValor());
         }
-        puntuacionj1.setText("" + p.getPuntos());
         tab.getElTablero()[pacy / 20][pacx / 20] = null;
     }
 
@@ -208,8 +231,7 @@ public class JuegoMulti extends JPanel {
             p2.comer(suero.getValor());
         } else {
             p2.comer(aux.getValor());
-        }
-        puntuacionj2.setText("" + p2.getPuntos());
+        };
         tab.getElTablero()[pacy / 20][pacx / 20] = null;
     }
 
@@ -239,13 +261,15 @@ public class JuegoMulti extends JPanel {
         nivel = 1;
         nivel1 = getNivel1();
         ArrayList<ImageIcon> img = op.getApariencia();
-        ArrayList<ImageIcon> imagenes = new ArrayList<>();
-        cargarImagenes(img, imagenes, 0, 4);
+        ArrayList<ImageIcon> imagenesP1 = new ArrayList<>();
+        cargarImagenes(img, imagenesP1, 0, 3);
+        ArrayList<ImageIcon> imagenesP2 = new ArrayList<>();
+        cargarImagenes(img, imagenesP2, 26, 29);
         ArrayList<ImageIcon> imagenesTab = new ArrayList<>();
-        cargarImagenes(img, imagenesTab, 5, 9);
+        cargarImagenes(img, imagenesTab, 4, 8);
         tab = new Tablero(imagenesTab, nivel1);
-        p = new Pacman(imagenes, new Posicion(200, 280, getWidth(), getHeight()), op.getControl(1));
-        p2 = new Pacman(imagenes, new Posicion(300, 280, getWidth(), getHeight()), op.getControl(2));
+        p = new Pacman(imagenesP1, new Posicion(200, 280, getWidth(), getHeight()), op.getControl(1));
+        p2 = new Pacman(imagenesP2, new Posicion(300, 280, getWidth(), getHeight()), op.getControl(2));
     }
 
     private void instanciarHerramientasDeJuego() {
@@ -260,8 +284,8 @@ public class JuegoMulti extends JPanel {
         etiquetaDeAviso = new JLabel("Listo!");
         etiquetaDeAviso.setFont(new Font("Megaman 2", Font.BOLD, 15));
         etiquetaDeAviso.setOpaque(false);
-        etiquetaDeAviso.setBounds(170, 280, 250, 25);
-        etiquetaDeAviso.setForeground(Color.YELLOW);
+        etiquetaDeAviso.setBounds(170, 240, 250, 25);
+        etiquetaDeAviso.setForeground(Color.BLACK);
         etiquetaDeAviso.setVisible(true);
         add(etiquetaDeAviso);
     }
@@ -273,21 +297,21 @@ public class JuegoMulti extends JPanel {
         etiquetaj1.setFont(fuente);
         etiquetaj1.setForeground(colorDeFondo.YELLOW);
         etiquetaj1.setVisible(true);
-        puntuacionj1 = new JLabel();
-        puntuacionj1.setBounds(140, 10, 120, 20);
-        puntuacionj1.setFont(fuente);
-        puntuacionj1.setForeground(colorDeFondo.WHITE);
-        puntuacionj1.setVisible(true);
+        
+        
+        p.getPuntuacion().setBounds(140, 10, 120, 20);
+        p.getPuntuacion().setFont(fuente);
+        p.getPuntuacion().setForeground(colorDeFondo.WHITE);
+        p.getPuntuacion().setVisible(true);
         etiquetaj2 = new JLabel("ScoreJ2");
         etiquetaj2.setBounds(210, 10, 120, 20);
         etiquetaj2.setFont(fuente);
         etiquetaj2.setForeground(colorDeFondo.YELLOW);
         etiquetaj2.setVisible(true);
-        puntuacionj2 = new JLabel();
-        puntuacionj2.setBounds(340, 10, 120, 20);
-        puntuacionj2.setFont(fuente);
-        puntuacionj2.setForeground(colorDeFondo.WHITE);
-        puntuacionj2.setVisible(true);
+        p2.getPuntuacion().setBounds(340, 10, 120, 20);
+        p2.getPuntuacion().setFont(fuente);
+        p2.getPuntuacion().setForeground(colorDeFondo.WHITE);
+        p2.getPuntuacion().setVisible(true);
 
     }
 
@@ -306,33 +330,33 @@ public class JuegoMulti extends JPanel {
     public int[][] getNivel1() {
         int[][] t = {
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0},
-            {0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-            {8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 8},
-            {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 9, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 1, 0},
-            {0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
+            {0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
+            {0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
+            {0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
+            {0, 1, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 7, 7, 7, 7, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 0},
+            {0, 1, 1, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 9, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 9, 1, 0},
+            {1, 1, 1, 1, 1, 1, 7, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 7, 1, 1, 1, 1, 1},
+            {1, 1, 1, 1, 1, 1, 7, 1, 0, 1, 1, 1, 1, 1, 1, 0, 7, 7, 7, 1, 1, 1, 1, 1},
+            {8, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 7, 0, 0, 0, 0, 8},
+            {1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 1, 1},
+            {0, 1, 9, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 9, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 1, 1, 0},
+            {0, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
+            {0, 1, 7, 7, 7, 7, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 1, 0},
+            {0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
+            {0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
+            {0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
+            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
         System.out.println(t.length + " " + t[0].length);
         return t;
     }
@@ -413,11 +437,11 @@ public class JuegoMulti extends JPanel {
     }
 
     public JLabel getPuntuacionj1() {
-        return puntuacionj1;
+        return p.getPuntuacion();
     }
 
     public JLabel getPuntuacionj2() {
-        return puntuacionj2;
+        return p2.getPuntuacion();
     }
 
     public JLabel getEtiquetaDeAviso() {

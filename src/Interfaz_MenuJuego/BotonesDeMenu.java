@@ -81,12 +81,12 @@ public class BotonesDeMenu extends JPanel {
     }
 
     private void agregarBotonMultijugador() {
-        int x = 300;
+        int x = 320;
         int y = 360;
         ImageIcon imgico = new ImageIcon("imgPanelMenu/botonVersus.png");
         ImageIcon imgico2 = new ImageIcon("imgPanelMenu/botonVersus.png");
         btn_Multijugador = new BotonesPersonalizados(x, y, imgico, imgico2);
-        btn_Multijugador.setBounds(x, y, 200, 120);
+        btn_Multijugador.setBounds(x, y, 200, 150);
         add(btn_Multijugador);
     }
     

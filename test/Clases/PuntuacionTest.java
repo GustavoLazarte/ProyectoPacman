@@ -1,16 +1,15 @@
 package Clases;
 
+import org.junit.Assert;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-
 
 public class PuntuacionTest {
     
     public PuntuacionTest() {
     }
-    
 
     
     @Test
@@ -59,7 +58,7 @@ public class PuntuacionTest {
         Puntuacion instance = new Puntuacion("Julia", 950);
         String expResult = "" +950;
         String result = instance.toString();
-        assertEquals("" + expResult, result);
+        Assert.assertEquals(expResult, result);
         if(expResult.equals(result) == false){
             fail("Existe un error");
         }

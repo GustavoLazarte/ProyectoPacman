@@ -98,10 +98,14 @@ public class MovimientoAuto implements ActionListener {
             if (hayColision()) {
                 colisionar();
             }
+            if (f.esComible()) {
+                retomarForma();
+            }
         }
     }
 
     private void cambiarDireccion() {
+//        621014
         switch ((int) (Math.random() * 4)) {
             case 0:
                 if (!arriba) {
@@ -109,6 +113,8 @@ public class MovimientoAuto implements ActionListener {
                     abajo = false;
                     izq = false;
                     der = false;
+                    System.out.println("la imagen" +(2 + 4*(f.getNumFantasma()-1)));
+                    f.setImg(2 + 4*(f.getNumFantasma()-1));
                     break;
                 }
             case 1:
@@ -117,6 +123,7 @@ public class MovimientoAuto implements ActionListener {
                     abajo = true;
                     izq = false;
                     der = false;
+                    f.setImg(3 + 4*(f.getNumFantasma()-1));
                     break;
                 }
             case 2:
@@ -125,6 +132,7 @@ public class MovimientoAuto implements ActionListener {
                     abajo = false;
                     izq = false;
                     der = true;
+                    f.setImg(4*(f.getNumFantasma()-1));
                     break;
                 }
             case 3:
@@ -133,14 +141,12 @@ public class MovimientoAuto implements ActionListener {
                     abajo = false;
                     izq = true;
                     der = false;
+                    f.setImg(1 + 4*(f.getNumFantasma()-1));
                     break;
                 }
         }
     }
 
-//    public void detenerTiempo() {
-//        t.stop();
-//    }
     public boolean hayColision(Pacman p) {
         return hayColisionIzq() || hayColisionDer() || hayColisionArriba() || hayColisionAbajo();
     }
@@ -190,10 +196,6 @@ public class MovimientoAuto implements ActionListener {
     public Timer getT() {
         return t;
     }
-
-//    public void iniciarMovimiento() {
-//        t.start();
-//    }
     public boolean isArriba() {
         return arriba;
     }
@@ -227,11 +229,13 @@ public class MovimientoAuto implements ActionListener {
     private void colisionar() {
         if(f.esComible()){
             choque2.reproducir("fantasmaMuerto.wav");
+            p.comer(f.getValor());
             f.reiniciarFantasma();
             
         }else{
             if(p.tieneVidas()){
                 choque1.reproducir("pacmanMuerto.wav");
+                p.setImg(1);
                 p.morir();
                 p.reiniciarPacman();
                 f.reiniciarFantasma();

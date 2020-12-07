@@ -8,6 +8,7 @@ package Clases;
 import Herramientas.MovimientoAuto;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 /**
@@ -17,16 +18,21 @@ import javax.swing.ImageIcon;
 public class Fantasma {
 
     private boolean comible;
-    private int valor;
+    private final int valor;
     private Posicion posicion, inicial;
     private ImageIcon fantasmaNormal, fantasmaComible;
     private MovimientoAuto mov;
+    private ArrayList<ImageIcon> imagenes;
+    private int numFantasma;
 
-    public Fantasma(ImageIcon fantasmaNormal, ImageIcon fantasmaComible, Posicion p) {
-        this.fantasmaNormal = fantasmaNormal;
+    public Fantasma(ArrayList<ImageIcon> fant, int numImagenFant, ImageIcon fantasmaComible, Posicion p) {
+        valor = 200;
+        this.imagenes = fant;
+        this.fantasmaNormal = imagenes.get(numImagenFant);
         this.fantasmaComible = fantasmaComible;
+        numFantasma = (numImagenFant + 1) / 4;
         comible = false;
-        inicial = new Posicion(p.getX(), p.getY(), (int)p.getArea().getWidth(), (int)p.getArea().getHeight());
+        inicial = new Posicion(p.getX(), p.getY(), (int) p.getArea().getWidth(), (int) p.getArea().getHeight());
         posicion = p;
         mov = new MovimientoAuto(this);
     }
@@ -42,7 +48,7 @@ public class Fantasma {
     public void cambiarFormaComible() {
         comible = true;
     }
-    
+
     public void cambiarFormaNoComible() {
         comible = false;
     }
@@ -62,10 +68,20 @@ public class Fantasma {
     public MovimientoAuto getMov() {
         return mov;
     }
-    
-    public void reiniciarFantasma(){
+
+    public void setImg(int i) {
+        this.fantasmaNormal = imagenes.get(i);
+    }
+
+    public void reiniciarFantasma() {
         comible = false;
-        posicion = new Posicion(inicial.getX(), inicial.getY(), (int)inicial.getArea().getMaxX(), (int)inicial.getArea().getMaxY());
+        posicion = new Posicion(inicial.getX(), inicial.getY(), (int) inicial.getArea().getMaxX(), (int) inicial.getArea().getMaxY());
+    }
+
+    public int getNumFantasma() {
+        return numFantasma;
     }
     
+    
+
 }

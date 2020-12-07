@@ -12,6 +12,7 @@ import Clases.Comida_Normal;
 import Clases.Fantasma;
 import Clases.Pacman;
 import Clases.Posicion;
+import Clases.Puntuacion;
 import Clases.Tablero;
 import Herramientas.Audio;
 import Interfaz_Opciones.Opciones;
@@ -19,6 +20,7 @@ import Interfaz_Puntuaciones.Puntuaciones;
 import Ventana.VentanaPrincipal;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -28,8 +30,10 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -49,7 +53,7 @@ public class Juego extends JPanel {
     private Pacman p;
     private Timer timer;
     private int estado, nivel, contadorComida;
-    private JLabel puntuacion;
+
     private Color colorDeFondo;
     private Rectangle tamaño;
     private Audio audioDeComer, audioDeFondo, audioInicial;
@@ -58,10 +62,13 @@ public class Juego extends JPanel {
     private JLabel etiquetaDeAviso;
     private Font fuente;
     private int contador;
-    private JPanel panelRegistrador;
     private Puntuaciones pun;
+    private VentanaPrincipal padre;
+    private Thread hilo;
 
-    public Juego(Opciones op, Puntuaciones p) {
+    public Juego(Opciones op, Puntuaciones p, VentanaPrincipal padre) {
+        this.padre = padre;
+        pun = p;
         cambiarAspectoPanel();
         instanciarVariablesJuego(op);
         instanciarHerramientasDeJuego();
@@ -78,14 +85,26 @@ public class Juego extends JPanel {
     }
 
     private void iniciarJuego() {
-        //VentanaPrincipal.detenerMusica();
         audioInicial.reproducir("audio.wav");
         darAccion();
         obtenerControles();
+        hilo = new Thread() {
+            public void run() {
+                while (estado != TERMINADO) {
+                    repaint();
+                    try {
+                        //Paint Velocity 
+                        Thread.sleep(25);
+                    } catch (Exception ex) {
+                        System.out.println("error in graphics engine: " + ex.getMessage());
+                    }
+                }
+            }
+        };
+        hilo.start();
     }
 
     public void paint(Graphics g) {
-
         tab.paint(g);
         super.paint(g);
         fantasmas[0].paint(g);
@@ -112,21 +131,24 @@ public class Juego extends JPanel {
                             estado = TERMINADO;
                         }
                     }
-                    if(contadorComida >= 120 && contadorComida % 120== 0){
+                    if ( tab.hayComnidaBonus() && contadorComida >= 120 && contadorComida % 120 == 0) {
                         tab.aparecerFrutitas();
                         contadorComida++;
-                    }else{
-                        contadorComida++;
-                        System.out.println(contadorComida);
+                    } else {
+                        if (tab.hayComnidaBonus()) {
+                            contadorComida++;
+                        }else{
+                            contadorComida = 0;
+                        }
                     }
-                    repaint();
+//                    repaint();
                 } else if (estado == TERMINADO) {
                     quitarAcciones();
                     terminarJuego();
                     timer.stop();
                 } else if (estado == NO_INICIADO) {
                     activarJuego();
-                    repaint();
+//                    repaint();
                 }
 
             }
@@ -139,11 +161,20 @@ public class Juego extends JPanel {
         if (!tab.hayComida() && nivel == 3) {
             etiquetaDeAviso.setText("Winner");
             etiquetaDeAviso.setVisible(true);
-            
         } else {
             etiquetaDeAviso.setText("Game Over");
             etiquetaDeAviso.setVisible(true);
         }
+        Puntuacion nueva = new Puntuacion("", p.getPuntos());
+        if (pun.sePuedeAñadir(nueva)) {
+            String nombre = JOptionPane.showInputDialog("High Score! \n ingrese su nombre");
+            nueva.setNombre(nombre);
+            pun.agregarPuntuacion(nueva);
+            pun.actualizar();
+        }
+        hilo.stop();
+        audioDeFondo.stop();
+        padre.salirDelJuego();
     }
 
     private void obtenerControles() {
@@ -154,27 +185,32 @@ public class Juego extends JPanel {
         int pacx = p.getPosicion().getX();
         int pacy = p.getPosicion().getY();
 
-        if (!audioDeComer.estaEnCurso()) {
-            audioDeComer.reproducir("wakawaka.wav");
-        }
-
         Comida aux = (Comida) tab.getElTablero()[pacy / 20][pacx / 20];
-        if(aux instanceof Comida_Bonus){
-            Comida_Bonus frutitas = (Comida_Bonus)(aux);
-            p.comer(frutitas.getValor());
-        }else if (aux instanceof Comida_Especial) {
+        if (aux instanceof Comida_Bonus) {
+            Comida_Bonus frutitas = (Comida_Bonus) (aux);
+            if (!audioDeComer.estaEnCurso() && frutitas.isAparecer()) {
+                audioDeComer.reproducir("comiendoCherry.wav");
+            }
+            if(frutitas.getValor() != 0){
+                tab.getElTablero()[pacy / 20][pacx / 20] = null;
+            }
+        } else if (aux instanceof Comida_Especial) {
             Comida_Especial suero = (Comida_Especial) aux;
             suero.cambiarEstado(fantasmas);
             p.comer(suero.getValor());
-        }else{
+            tab.getElTablero()[pacy / 20][pacx / 20] = null;
+        } else {
             p.comer(aux.getValor());
+            if (!audioDeComer.estaEnCurso()) {
+                audioDeComer.reproducir("wakawaka.wav");
+            }
+            tab.getElTablero()[pacy / 20][pacx / 20] = null;
         }
-        puntuacion.setText("" + p.getPuntos());
-        tab.getElTablero()[pacy / 20][pacx / 20] = null;
+        
     }
 
     public JLabel getPuntuacion() {
-        return puntuacion;
+        return p.getPuntuacion();
     }
 
     private boolean sePuedeComer(Posicion pacman) {
@@ -184,9 +220,9 @@ public class Juego extends JPanel {
         return tab.getElTablero()[pacy / 20][pacx / 20] instanceof Comida;
     }
 
-    private void agregarFantasmas(ImageIcon fanNormal, ImageIcon fanRaro) {
+    private void agregarFantasmas(ArrayList<ImageIcon> fanNormal, ImageIcon fanRaro) {
         for (int i = 0; i < fantasmas.length; i++) {
-            fantasmas[i] = new Fantasma(fanNormal, fanRaro, new Posicion(220, 240, getWidth(), getHeight()));
+            fantasmas[i] = new Fantasma(fanNormal, 4 * (i + 1) - 1, fanRaro, new Posicion(220, 240, getWidth(), getHeight()));
         }
     }
 
@@ -199,15 +235,9 @@ public class Juego extends JPanel {
 
     private void iniciarMovimientos() {
         for (int i = 0; i < fantasmas.length; i++) {
-            if(fantasmas[i].getMov().getP() == null){
+            if (fantasmas[i].getMov().getP() == null) {
                 fantasmas[i].getMov().setP(p);
             }
-        }
-    }
-
-    private void detenerMovimientos() {
-        for (int i = 0; i < fantasmas.length; i++) {
-//            fantasmas[i].getMov().detenerTiempo();
         }
     }
 
@@ -218,21 +248,19 @@ public class Juego extends JPanel {
         etiqueta.setFont(fuente);
         etiqueta.setForeground(colorDeFondo.YELLOW);
         etiqueta.setVisible(true);
-        puntuacion = new JLabel();
-        puntuacion.setBounds(100, 10, 100, 20);
-        puntuacion.setFont(fuente);
-        puntuacion.setForeground(colorDeFondo.WHITE);
-        puntuacion.setVisible(true);
-        
+        p.getPuntuacion().setBounds(100, 10, 100, 20);
+        p.getPuntuacion().setFont(fuente);
+        p.getPuntuacion().setForeground(colorDeFondo.WHITE);
+        p.getPuntuacion().setVisible(true);
+
         p.getEtiquetaVidas().setBounds(10, 610, 100, 20);
         p.getEtiquetaVidas().setFont(fuente);
         p.getEtiquetaVidas().setForeground(Color.YELLOW);
-        
+
         p.getEtiquetaCantidad().setBounds(100, 610, 100, 20);
         p.getEtiquetaCantidad().setFont(fuente);
         p.getEtiquetaCantidad().setForeground(colorDeFondo.WHITE);
-        
-        
+
     }
 
     public JLabel getEtiqueta() {
@@ -323,7 +351,7 @@ public class Juego extends JPanel {
         return t2;
     }
 
-    public int[][] getNivel1a() {
+    public int[][] getNivel1() {
         int[][] t = {
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
             {0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
@@ -353,40 +381,6 @@ public class Juego extends JPanel {
             {0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
             {0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
             {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
-        System.out.println(t.length + " " + t[0].length);
-        return t;
-    }
-
-    public int[][] getNivel1() {
-        int[][] t = {
-            {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0},
-            {0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1},
-            {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1},
-            {8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 8},
-            {1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 9, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0},
-            {0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 1, 0},
-            {0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0}};
         System.out.println(t.length + " " + t[0].length);
         return t;
     }
@@ -446,12 +440,14 @@ public class Juego extends JPanel {
         fantasmas = new Fantasma[4];
         ArrayList<ImageIcon> img = op.getApariencia();
         ArrayList<ImageIcon> imagenes = new ArrayList<>();
-        cargarImagenes(img, imagenes, 0, 4);
+        cargarImagenes(img, imagenes, 0, 3);
         ArrayList<ImageIcon> imagenesTab = new ArrayList<>();
-        cargarImagenes(img, imagenesTab, 5, 9);
+        cargarImagenes(img, imagenesTab, 4, 8);
+        ArrayList<ImageIcon> imagenesFant = new ArrayList<>();
+        cargarImagenes(img, imagenesFant, 9, 25);
         tab = new Tablero(imagenesTab, nivel1);
         p = new Pacman(imagenes, new Posicion(260, 280, getWidth(), getHeight()), op.getControl(1));
-        agregarFantasmas(img.get(10), img.get(11));
+        agregarFantasmas(imagenesFant, img.get(25));
     }
 
     private void cambiarAspectoPanel() {
@@ -459,7 +455,7 @@ public class Juego extends JPanel {
         tamaño = new Rectangle(10, 40, 480, 560);
         setLayout(null);
         setOpaque(false);
-        setBackground(colorDeFondo);
+        setBackground(null);
         setBounds(tamaño);
         setFocusable(true);
     }
@@ -468,34 +464,16 @@ public class Juego extends JPanel {
         audioInicial = new Audio();
         audioDeComer = new Audio();
         audioDeFondo = new Audio();
-        agregarPanelAnotador();
         agregarScore();
         agregarEtiquetaDeAviso();
     }
-    
-    public JLabel agregarEtiquetaDeVida(){
+
+    public JLabel agregarEtiquetaDeVida() {
         return p.getEtiquetaVidas();
     }
-    
-    public JLabel agregarEtiquetaDeCantidad(){
-        return p.getEtiquetaCantidad();
-    }
 
-    private void agregarPanelAnotador() {
-        panelRegistrador = new JPanel();
-        panelRegistrador.setBackground(colorDeFondo);
-        panelRegistrador.setOpaque(true);
-        panelRegistrador.setBounds(getWidth()/3, getHeight()/3, 200, 100);
-        JTextField text = new JTextField();
-        text.setOpaque(true);
-        text.setBackground(Color.red);
-        text.setBounds(panelRegistrador.getWidth()/8, panelRegistrador.getHeight()/3, 200, 30);
-        text.setVisible(true);
-        panelRegistrador.add(text);
-        
-        
-        panelRegistrador.setVisible(true);
-        add(panelRegistrador);
+    public JLabel agregarEtiquetaDeCantidad() {
+        return p.getEtiquetaCantidad();
     }
 
 }

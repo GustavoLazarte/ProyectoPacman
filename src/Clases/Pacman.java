@@ -27,6 +27,7 @@ import javax.swing.Timer;
  */
 public class Pacman implements ActionListener {
 
+    
     private Controles controles;
     private int vida;
     private int puntos;
@@ -36,44 +37,26 @@ public class Pacman implements ActionListener {
     private ArrayList<ImageIcon> imagenes , imagenes2;
     private boolean estado;
     private int cantidadVidas;
-    private JLabel etiquetaVidas, etiquetaCantidad ;
+    private JLabel etiquetaVidas, etiquetaCantidad, puntuacion;
 
     public Pacman(ArrayList<ImageIcon> img, Posicion pos, Controles c) {
         etiquetaVidas = new JLabel("LIVES");
         cantidadVidas = 3;
-        etiquetaVidas.setVisible(true);
         etiquetaCantidad = new JLabel(""+cantidadVidas);
-        etiquetaCantidad.setVisible(true);
+        puntuacion = new JLabel(""+ puntos);
         estado = true;
         imagenes = img;
         imgActual = img.get(0);
-        cerrado = img.get(4);
         inicial = new Posicion(pos.getX(), pos.getY(), (int)pos.getArea().getWidth(), (int)pos.getArea().getHeight());
         posicion = pos;
         controles = c;
+        
         controles.setP(this);
-        vivo = true;
-    }
-    
-    public Pacman(ArrayList<ImageIcon> img, ArrayList<ImageIcon> img2, Posicion pos, Controles c) {
-        cantidadVidas = 3;
-        estado = true;
-        imagenes = img;
-        imgActual = img.get(0);
-        cerrado = img2.get(0);
-        inicial = new Posicion(pos.getX(), pos.getY(), (int)pos.getArea().getWidth(), (int)pos.getArea().getHeight());
-        posicion = pos;
-        controles = c;
         vivo = true;
     }
 
     public void paint(Graphics g) {
-        if (estado) {
-            g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
-        } else {
-            g.drawImage(cerrado.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);
-        }
-        estado = !estado;
+        g.drawImage(imgActual.getImage(), posicion.getX(), posicion.getY(), 25, 25, null);    
     }
 
     public int getVida() {
@@ -82,9 +65,6 @@ public class Pacman implements ActionListener {
 
     public void setImg(int i) {
         this.imgActual = imagenes.get(i);
-        if(imagenes2 != null){
-            cerrado = imagenes2.get(i);
-        }
     }
 
     public int getPuntos() {
@@ -109,6 +89,8 @@ public class Pacman implements ActionListener {
 
     public void comer(int puntos) {
         this.puntos += puntos;
+        puntuacion.setText(""+ this.puntos);
+        puntuacion.repaint();
     }
 
     public void morir() {
@@ -158,6 +140,21 @@ public class Pacman implements ActionListener {
 
     public JLabel getEtiquetaCantidad() {
         return etiquetaCantidad;
+    }
+
+    private void agregarEtiquetas() {
+        etiquetaVidas = new JLabel("LIVES");
+        cantidadVidas = 3;
+        etiquetaVidas.setVisible(true);
+        etiquetaCantidad = new JLabel(""+cantidadVidas);
+        etiquetaCantidad.setVisible(true);
+        
+        puntuacion = new JLabel(""+puntos);
+        etiquetaCantidad.setVisible(true);
+    }
+
+    public JLabel getPuntuacion() {
+        return puntuacion;
     }
     
     

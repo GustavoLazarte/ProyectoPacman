@@ -5,8 +5,10 @@
  */
 package Interfaz_Opciones;
 
+import Herramientas.Audio;
 import Herramientas.Controles;
 import Interfaz_MenuJuego.Menu;
+import Ventana.VentanaPrincipal;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
@@ -28,7 +30,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author Miguel
+ * @author Freddy
  */
 public class Opciones extends JPanel{
 
@@ -52,28 +54,37 @@ public class Opciones extends JPanel{
     private Controles controlUno;
     private Controles controlDos;
     private Font f1, f2, f3;
+    private Audio saveSound;
+    private Audio optionSound;
 
     private Hashtable<String, ArrayList> skins;
     private ArrayList<ImageIcon> skinActual;
     private ArrayList<ImageIcon> predeterminada;
     private JComboBox listaApariencias;
     private JLabel pacman;
+    private JLabel pacman2;
     private JLabel muro;
     private JLabel comida;
+    private JLabel comida2;
     private JLabel suelo;
-    private JLabel fantasma;
+    private JLabel fantasmaUno;
+    private JLabel fantasmaDos;
+    private JLabel fantasmaTres;
+    private JLabel fantasmaCuatro;
 
-    public Opciones(Controles c1, Controles c2, Menu menu) {
+    public Opciones(Menu menu) {
         tamaño = new Rectangle(0, 0, 500, 500);
         setLayout(null);
         setOpaque(true);
         setVisible(false);
         setBounds(tamaño);
         setBackground(Color.black);
-
+        setFocusable(true);
+        saveSound = new Audio();
+        optionSound = new Audio();
         teclas = new Hashtable();
-        controlUno = c1;
-        controlDos = c2;
+        controlUno = new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null);
+        controlDos = new Controles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, null);
         f1 = new Font("MegaMan 2 Regular", Font.BOLD, 16);
         f2 = new Font("MegaMan 2 Regular", Font.BOLD, 14);
         f3 = new Font("MegaMan 2 Regular", Font.BOLD, 20);
@@ -87,7 +98,7 @@ public class Opciones extends JPanel{
         crearDictTeclas();
         crearOpcionesJugador(1);
         crearOpcionesJugador(2);
-        crearCampos(controlUno, controlDos);
+        crearCampos();
 
         guardar = new JButton("Guardar");
         cancelar = new JButton("Cancelar");
@@ -97,6 +108,8 @@ public class Opciones extends JPanel{
 
         crearBoton(guardar, 330, 450, 150, 25, f2, this, false);
         crearBoton(cancelar, 20, 450, 150, 25, f2, this, false);
+        guardar.setForeground(Color.yellow);
+        cancelar.setForeground(Color.yellow);
         crearBoton(apariencias, 5, 5, 242, 50, f3, this, true);
         crearBoton(controles, 253, 5, 242, 50, f3, this, true);
         crearBoton(restaurar, 75, 420, 350, 25, f2, this, false);
@@ -107,10 +120,15 @@ public class Opciones extends JPanel{
         skinActual = new ArrayList();
         crearListaApariencias();
         pacman = new JLabel(skinActual.get(3));
+        pacman2 = new JLabel(skinActual.get(29));
         muro = new JLabel(skinActual.get(8));
         comida = new JLabel(skinActual.get(5));
+        comida2 = new JLabel(skinActual.get(6));
         suelo = new JLabel(skinActual.get(4));
-        fantasma = new JLabel(skinActual.get(9));
+        fantasmaUno = new JLabel(skinActual.get(12));
+        fantasmaDos = new JLabel(skinActual.get(16));
+        fantasmaTres = new JLabel(skinActual.get(20));
+        fantasmaCuatro = new JLabel(skinActual.get(24));
         listaApariencias = new JComboBox();
 
         crearOpcionesApariencias();
@@ -119,7 +137,8 @@ public class Opciones extends JPanel{
         add(opcionesControles);
         opcionesApariencias.setVisible(true);
         apariencias.setEnabled(false);
-        darFuncionesBotonesControles(controlUno, controlDos, menu);
+        controles.setForeground(Color.yellow);
+        darFuncionesBotonesControles(menu);
         darFuncionesApariencia(menu);
     }
 
@@ -150,13 +169,16 @@ public class Opciones extends JPanel{
         opcionesApariencias.add(label);
     }
 
-    private void darFuncionesBotonesControles(Controles c1, Controles c2, Menu menu){
+    private void darFuncionesBotonesControles(Menu menu){
         apariencias.addActionListener(new  ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                apariencias.setForeground(Color.white);
                 apariencias.setEnabled(false);
                 controles.setEnabled(true);
+                controles.setForeground(Color.yellow);
                 opcionesControles.setVisible(false);
+                optionSound.reproducir("imgPanelOpciones/Option sound.wav");
                 opcionesApariencias.setVisible(true);
             }
         });
@@ -164,9 +186,12 @@ public class Opciones extends JPanel{
         controles.addActionListener(new  ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                controles.setForeground(Color.white);
                 controles.setEnabled(false);
                 apariencias.setEnabled(true);
+                apariencias.setForeground(Color.yellow);
                 opcionesApariencias.setVisible(false);
+                optionSound.reproducir("imgPanelOpciones/Option sound.wav");
                 opcionesControles.setVisible(true);
             }
         });
@@ -174,34 +199,40 @@ public class Opciones extends JPanel{
         guardar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(opcionesControles.isVisible()){
-                    if(!checkTextFields()){
-                        JOptionPane.showMessageDialog(opcionesControles, "Uno o más campos están vacíos.");
-                    }else{
-                        int upOne = teclas.get(arribaUno.getText().toUpperCase());
-                        int downOne = teclas.get(abajoUno.getText().toUpperCase());
-                        int leftOne = teclas.get(izquierdaUno.getText().toUpperCase());
-                        int rightOne = teclas.get(derechaUno.getText().toUpperCase());
-                        int upTwo = teclas.get(arribaDos.getText().toUpperCase());
-                        int downTwo = teclas.get(abajoDos.getText().toUpperCase());
-                        int leftTwo = teclas.get(izquierdaDos.getText().toUpperCase());
-                        int rightTwo = teclas.get(derechaDos.getText().toUpperCase());
-
-                        if(!checkTeclas()){
-                            JOptionPane.showMessageDialog(opcionesControles, "Inserte valores válidos.");
-                        }else if(checkControls(upOne, downOne, leftOne, rightOne, upTwo, downTwo, leftTwo, rightTwo)){
-                            JOptionPane.showMessageDialog(opcionesControles, "Los controles no pueden repetirse.");
-                        }else{
-                            c1.updateControles(upOne, downOne, leftOne, rightOne);
-                            c2.updateControles(upTwo, downTwo, leftTwo, rightTwo);
-                            setVisible(false);
-                            menu.setVisible(true);
-                        }
-                    }
+                JOptionPane advertencia = new JOptionPane();
+                if(!checkTextFields()){
+                    advertencia.setForeground(Color.white);
+                    advertencia.setBackground(Color.black);
+                    advertencia.showMessageDialog(opcionesControles, "Uno o más campos están vacíos.");
                 }else{
-                    skinActual = skins.get(listaApariencias.getSelectedItem().toString());
-                    setVisible(false);
-                    menu.setVisible(true);
+                    int upOne = teclas.get(arribaUno.getText().toUpperCase());
+                    int downOne = teclas.get(abajoUno.getText().toUpperCase());
+                    int leftOne = teclas.get(izquierdaUno.getText().toUpperCase());
+                    int rightOne = teclas.get(derechaUno.getText().toUpperCase());
+                    int upTwo = teclas.get(arribaDos.getText().toUpperCase());
+                    int downTwo = teclas.get(abajoDos.getText().toUpperCase());
+                    int leftTwo = teclas.get(izquierdaDos.getText().toUpperCase());
+                    int rightTwo = teclas.get(derechaDos.getText().toUpperCase());
+
+                    if(!checkTeclas()){
+                        advertencia.setForeground(Color.white);
+                        advertencia.setBackground(Color.black);
+                        advertencia.showMessageDialog(opcionesControles, "Inserte valores válidos.");
+                    }else if(checkControls(upOne, downOne, leftOne, rightOne, upTwo, downTwo, leftTwo, rightTwo)){
+                        advertencia.setForeground(Color.white);
+                        advertencia.setBackground(Color.black);
+                        advertencia.showMessageDialog(opcionesControles, "Los controles no pueden repetirse.");
+                    }else{
+                        controlUno.updateControles(upOne, downOne, leftOne, rightOne);
+                        controlDos.updateControles(upTwo, downTwo, leftTwo, rightTwo);
+                        setVisible(false);
+                        //System.out.println("Abajo: " + downOne + " Arriba: " + upOne + " Derecha: " + rightOne + " Izquierda: " + leftOne);
+                        skinActual = skins.get(listaApariencias.getSelectedItem().toString());
+                        if (!saveSound.estaEnCurso()) {
+                            saveSound.reproducir("imgPanelOpciones/Save sound.wav");
+                        }
+                        menu.setVisible(true);
+                    }
                 }
             }
         });
@@ -209,18 +240,26 @@ public class Opciones extends JPanel{
         restaurar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(opcionesControles.isVisible()){
-                    c1.updateControles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D);
-                    c2.updateControles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT);
-                    setVisible(false);
-                    menu.setVisible(true);
-                }else{
-                    skinActual = predeterminada;
-                    setVisible(false);
-                    menu.setVisible(true);
-                } 
+                controlUno.updateControles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D);
+                controlDos.updateControles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT);
+                setVisible(false);
+                arribaUno.setText(getLlave(KeyEvent.VK_W).toLowerCase());
+                abajoUno.setText(getLlave(KeyEvent.VK_S).toLowerCase());
+                izquierdaUno.setText(getLlave(KeyEvent.VK_A).toLowerCase());
+                derechaUno.setText(getLlave(KeyEvent.VK_D).toLowerCase());
+                arribaDos.setText(getLlave(KeyEvent.VK_UP).toLowerCase());
+                abajoDos.setText(getLlave(KeyEvent.VK_DOWN).toLowerCase());
+                izquierdaDos.setText(getLlave(KeyEvent.VK_LEFT).toLowerCase());
+                derechaDos.setText(getLlave(KeyEvent.VK_RIGHT).toLowerCase());
+                
+                skinActual = predeterminada;
+                listaApariencias.setSelectedIndex(0);
+                if (!saveSound.estaEnCurso()) {
+                    saveSound.reproducir("imgPanelOpciones/Save sound.wav");
+                }
+                menu.setVisible(true);
+                
             }
-            
         });
 
         cancelar.addActionListener(new ActionListener() {
@@ -303,7 +342,7 @@ public class Opciones extends JPanel{
     private void crearLabel(JLabel label, int posX, int posY, int sizeX, int sizeY, Font f){
         label.setBounds(posX, posY, sizeX, sizeY);
         label.setFont(f);
-        label.setForeground(Color.white);
+        label.setForeground(Color.yellow);
         label.setVisible(true);
     }
 
@@ -315,10 +354,10 @@ public class Opciones extends JPanel{
         opcionesControles.add(tecla);
     }
 
-    private void crearCampos(Controles c1, Controles c2){
+    private void crearCampos(){
         int campo = 0;
         String llave = "";
-        campo = getCampo("Arriba", c1);
+        campo = getCampo("Arriba", controlUno);
         llave = getLlave(campo);
         arribaUno = new JTextField(llave.toLowerCase());
         arribaUno.setBounds(80, 130, 125, 30);
@@ -329,7 +368,7 @@ public class Opciones extends JPanel{
         arribaUno.setVisible(true);
         actualizarCampo(arribaUno);
 
-        campo = getCampo("Abajo", c1);
+        campo = getCampo("Abajo", controlUno);
         llave = getLlave(campo);
         abajoUno = new JTextField(llave.toLowerCase());
         abajoUno.setBounds(80, 190, 125, 30);
@@ -340,7 +379,7 @@ public class Opciones extends JPanel{
         abajoUno.setVisible(true);
         actualizarCampo(abajoUno);
 
-        campo = getCampo("Izquierda", c1);
+        campo = getCampo("Izquierda", controlUno);
         llave = getLlave(campo);
         izquierdaUno = new JTextField(llave.toLowerCase());
         izquierdaUno.setBounds(80, 250, 125, 30);
@@ -351,7 +390,7 @@ public class Opciones extends JPanel{
         izquierdaUno.setVisible(true);
         actualizarCampo(izquierdaUno);
 
-        campo = getCampo("Derecha", c1);
+        campo = getCampo("Derecha", controlUno);
         llave = getLlave(campo);
         derechaUno = new JTextField(llave.toLowerCase());
         derechaUno.setBounds(80, 310, 125, 30);
@@ -366,7 +405,7 @@ public class Opciones extends JPanel{
         opcionesControles.add(izquierdaUno);
         opcionesControles.add(derechaUno);
 
-        campo = getCampo("Arriba", c2);
+        campo = getCampo("Arriba", controlDos);
         llave = getLlave(campo);
         arribaDos = new JTextField(llave.toLowerCase());
         arribaDos.setBounds(345, 130, 125, 30);
@@ -377,7 +416,7 @@ public class Opciones extends JPanel{
         arribaDos.setVisible(true);
         actualizarCampo(arribaDos);
 
-        campo = getCampo("Abajo", c2);
+        campo = getCampo("Abajo", controlDos);
         llave = getLlave(campo);
         abajoDos = new JTextField(llave.toLowerCase());
         abajoDos.setBounds(345, 190, 125, 30);
@@ -388,7 +427,7 @@ public class Opciones extends JPanel{
         abajoDos.setVisible(true);
         actualizarCampo(abajoDos);
 
-        campo = getCampo("Izquierda", c2);
+        campo = getCampo("Izquierda", controlDos);
         llave = getLlave(campo);
         izquierdaDos = new JTextField(llave.toLowerCase());
         izquierdaDos.setBounds(345, 250, 125, 30);
@@ -399,7 +438,7 @@ public class Opciones extends JPanel{
         izquierdaDos.setVisible(true);
         actualizarCampo(izquierdaDos);
 
-        campo = getCampo("Derecha", c2);
+        campo = getCampo("Derecha", controlDos);
         llave = getLlave(campo);
         derechaDos = new JTextField(llave.toLowerCase());
         derechaDos.setBounds(345, 310, 125, 30);
@@ -499,50 +538,65 @@ public class Opciones extends JPanel{
     }
 
     public void crearListaApariencias(){
-        predeterminada = crearApariencias("predeterminado/", "png", false);
+        predeterminada = crearApariencias("predeterminado/");
         skinActual = predeterminada;
         skins.put("Predeterminado", predeterminada);
 
         ArrayList<ImageIcon> skin;
-        skin = crearApariencias("morado/", "png", false);
-        skins.put("Morado", skin);
+        skin = crearApariencias("naranja/");
+        skins.put("Naranja", skin);
 
-        skin = crearApariencias("skinNavidad/", "gif", true);
-        skin.add(new ImageIcon("apariencias/skinNavidad/Muro 1.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Muro 2.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Muro 3.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Muro 4.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Muro 5.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Muro 6.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Comida Alternativa 1.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Comida Alternativa 2.png"));
-        skin.add(new ImageIcon("apariencias/skinNavidad/Comida 2 Alternativa.png"));
+        skin = crearApariencias("navidad/");
+        skin.add(new ImageIcon("apariencias/navidad/Muro 1.png"));
+        skin.add(new ImageIcon("apariencias/navidad/Muro 2.png"));
+        skin.add(new ImageIcon("apariencias/navidad/Muro 3.png"));
+        skin.add(new ImageIcon("apariencias/navidad/Muro 4.png"));
+        skin.add(new ImageIcon("apariencias/navidad/Muro 5.png"));
+        skin.add(new ImageIcon("apariencias/navidad/Muro 6.png"));
+        skin.add(new ImageIcon("apariencias/navidad/Comida Alternativa 1.png"));
+        skin.add(new ImageIcon("apariencias/navidad/Comida Alternativa 2.png"));
         skins.put("Navidad", skin);
 
-        skin = crearApariencias("pokemon/", "gif", true);
+        skin = crearApariencias("pokemon/");
         skins.put("Pokemon", skin);
     }
 
-    private ArrayList crearApariencias(String direccion, String tipoImagen, boolean esAnimado){
+    private ArrayList crearApariencias(String direccion){
         ArrayList<ImageIcon> lista = new ArrayList();
-        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanDer." + tipoImagen));
-        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanIzq." + tipoImagen));
-        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanArri." + tipoImagen));
-        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanAba." + tipoImagen));
-        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanCerrado." + tipoImagen));
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanDer.gif"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanIzq.gif"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanArri.gif"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanAba.gif"));
 
-        lista.add(new ImageIcon("apariencias/" + direccion + "Comida.png"));
-        lista.add(new ImageIcon("apariencias/" + direccion + "Suero.png"));
-        lista.add(new ImageIcon("apariencias/" + direccion + "Comida 2.png"));
         lista.add(new ImageIcon("apariencias/" + direccion + "Suelo.png"));
-         lista.add(new ImageIcon("apariencias/" + direccion + "Muro.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Comida.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Comida 2.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Suero.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Muro.png"));
         
-        lista.add(new ImageIcon("apariencias/" + direccion + "Fantasma.png"));
-        lista.add(new ImageIcon("apariencias/" + direccion + "FantasmaComible.gif"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan1 Der.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan1 Izq.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan1 Arriba.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan1 Abajo.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan2 Der.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan2 Izq.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan2 Arriba.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan2 Abajo.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan3 Der.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan3 Izq.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan3 Arriba.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan3 Abajo.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan4 Der.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan4 Izq.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan4 Arriba.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fan4 Abajo.png"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "Fantasma Vulnerable.gif"));
 
-        if(!esAnimado){
-            lista.add(new ImageIcon("apariencias/" + direccion + "pacmanCerrado.png"));
-        }
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanDer2.gif"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanIzq2.gif"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanArri2.gif"));
+        lista.add(new ImageIcon("apariencias/" + direccion + "pacmanAba2.gif"));
+
         return lista;
     }
 
@@ -552,17 +606,22 @@ public class Opciones extends JPanel{
         listaApariencias.setForeground(Color.white);
         listaApariencias.setBackground(Color.black);
         listaApariencias.addItem("Predeterminado");
-        listaApariencias.addItem("Morado");
+        listaApariencias.addItem("Naranja");
         listaApariencias.addItem("Navidad");
         listaApariencias.addItem("Pokemon");
         listaApariencias.setVisible(true);
         opcionesApariencias.add(listaApariencias);
 
-        crearImagen(pacman, 225, 225, 3);
-        crearImagen(muro, 280, 225, 8);
-        crearImagen(comida, 225, 170, 5);
-        crearImagen(suelo, 170, 225, 4);
-        crearImagen(fantasma, 225, 280, 9);
+        crearImagen(pacman, 197, 225, 3);
+        crearImagen(pacman2, 253, 225, 29);
+        crearImagen(muro, 308, 225, 8);
+        crearImagen(comida, 197, 170, 5);
+        crearImagen(comida2, 253, 170, 6);
+        crearImagen(suelo, 142, 225, 4);
+        crearImagen(fantasmaUno, 142, 280, 12);
+        crearImagen(fantasmaDos, 197, 280, 16);
+        crearImagen(fantasmaTres, 253, 280, 20);
+        crearImagen(fantasmaCuatro, 308, 280, 24);
     }
 
     public void darFuncionesApariencia(Menu menu){
@@ -572,10 +631,15 @@ public class Opciones extends JPanel{
                     ArrayList<ImageIcon> lista = new ArrayList();
                     lista = skins.get(listaApariencias.getSelectedItem().toString());
                     pacman.setIcon(new ImageIcon(lista.get(3).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+                    pacman2.setIcon(new ImageIcon(lista.get(29).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
                     muro.setIcon(new ImageIcon(lista.get(8).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
                     suelo.setIcon(new ImageIcon(lista.get(4).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
                     comida.setIcon(new ImageIcon(lista.get(5).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
-                    fantasma.setIcon(new ImageIcon(lista.get(9).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                    comida2.setIcon(new ImageIcon(lista.get(6).getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH)));
+                    fantasmaUno.setIcon(new ImageIcon(lista.get(12).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+                    fantasmaDos.setIcon(new ImageIcon(lista.get(16).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+                    fantasmaTres.setIcon(new ImageIcon(lista.get(20).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
+                    fantasmaCuatro.setIcon(new ImageIcon(lista.get(24).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT)));
                 }
         });
     }

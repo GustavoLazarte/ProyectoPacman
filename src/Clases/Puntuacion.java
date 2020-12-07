@@ -42,4 +42,9 @@ public class Puntuacion implements Comparable<Puntuacion> {
         return "" + puntos;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    
+
 }

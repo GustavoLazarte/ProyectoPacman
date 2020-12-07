@@ -88,7 +88,6 @@ public class Posicion {
     }
 
     public boolean sePuedeMoverIzq() {
-        //int minX = (int) (area.getMinX());
         try {
             if (estaAdentroX()) {
                 if (((x / 20) - 1) >= 0 && !(lab[(y / 20)][(x / 20) - 1] instanceof Muro)) {
@@ -112,7 +111,6 @@ public class Posicion {
     }
 
     public boolean sePuedeMoverAba() {
-        //int maxY = (int) (area.getMaxY());
         try {
             if (estaAdentroY()) {
                 if (((y / 20) + 1) < filas && !(lab[(y / 20) + 1][x / 20] instanceof Muro)) {
@@ -136,7 +134,6 @@ public class Posicion {
     }
 
     public boolean sePuedeMoverArri() {
-        //int minY = (int) (area.getMinY());
         try {
             if (estaAdentroY()) {
                 if (((y / 20 - 1) >= 0) && !(lab[(y / 20) - 1][x / 20] instanceof Muro)) {
@@ -183,7 +180,4 @@ public class Posicion {
     public Rectangle getArea() {
         return area;
     }
-    
-    
-
 }

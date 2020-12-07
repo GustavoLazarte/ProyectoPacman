@@ -39,8 +39,6 @@ public class VentanaPrincipal extends JFrame {
     private JuegoMulti jm;
 
     public VentanaPrincipal() {
-        Controles c1 = new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null);
-        Controles c2 = new Controles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, null);
         miPc = Toolkit.getDefaultToolkit();
         Dimension dimPantalla = miPc.getScreenSize();
         tamañoMenu = new Rectangle(dimPantalla.width / 4, dimPantalla.height / 32, 516, 538);
@@ -56,7 +54,8 @@ public class VentanaPrincipal extends JFrame {
         getContentPane().setBackground(Color.BLACK);
         setBounds(tamañoMenu);
         p = new Puntuaciones();
-        op = new Opciones(c1, c2, menu);
+        op = new Opciones(menu);
+        add(op);
         add(inicio);
         add(menu);
         darAccionABotones();
@@ -88,18 +87,7 @@ public class VentanaPrincipal extends JFrame {
 
                 setBounds(tamañoJuego);
                 detenerMusica();
-                j = new Juego(op,p);
-                j.setVisible(true);
-                add(j);
-                add(j.getPuntuacion());
-                add(j.getEtiqueta());
-                add(j.agregarEtiquetaDeVida());
-                add(j.agregarEtiquetaDeCantidad());
-//                for (int i = 0; i < j.getP().getVidas().length; i++) {
-//                    add(j.getP().getVidas()[i]);
-//                }
-                addKeyListener(j.getKeyListeners()[0]);
-                //addKeyListener(j.getKeyListeners()[2]);
+                iniciarJuego();
             }
         });
 
@@ -108,10 +96,7 @@ public class VentanaPrincipal extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 menu.setVisible(false);
                 setBounds(tamañoMenu);
-                op = new Opciones(new Controles(KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, null), new Controles(KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, null), menu);
                 op.setVisible(true);
-
-                add(op);
             }
         });
 
@@ -125,25 +110,15 @@ public class VentanaPrincipal extends JFrame {
                 add(p);
             }
         });
-        
+
         menu.getBotones().getBtn_Multijugador().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 menu.setVisible(false);
                 setBounds(tamañoJuego);
                 detenerMusica();
-                jm = new JuegoMulti(op);
-                jm.setVisible(true);
-                
-                add(jm);
-                add(jm.getEtiquetaj1());
-                add(jm.getEtiquetaj2());
-                add(jm.getPuntuacionj1());
-                add(jm.getPuntuacionj2());
-                
-                addKeyListener(jm.getKeyListeners()[0]);
-                addKeyListener(jm.getKeyListeners()[1]);
-                
+                iniciarJuegoMultijugador();
+
             }
         });
         p.getBtn_regresar().addActionListener(new ActionListener() {
@@ -154,14 +129,6 @@ public class VentanaPrincipal extends JFrame {
                 setBounds(tamañoMenu);
             }
         });
-//        j.getBtn_regresar().addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                j.setVisible(false);
-//                menu.setVisible(true);
-//                setBounds(tamañoMenu);
-//            }
-//        });
     }
 
     private static void agregarMusiquita() {
@@ -171,5 +138,59 @@ public class VentanaPrincipal extends JFrame {
 
     public static void detenerMusica() {
         audioFondo.stop();
+    }
+
+    public void salirDelJuego() {
+        if (j != null) {
+            j.setVisible(false);
+            remove(j.getPuntuacion());
+            remove(j.getEtiqueta());
+            remove(j.agregarEtiquetaDeVida());
+            remove(j.agregarEtiquetaDeCantidad());
+            
+            removeKeyListener(j.getKeyListeners()[0]);
+            remove(j);
+            setBounds(tamañoMenu);
+        }
+
+        if (jm != null) {
+            remove(jm);
+            jm.setVisible(false);
+            
+            remove(jm.getEtiquetaj1());
+            remove(jm.getEtiquetaj2());
+            remove(jm.getPuntuacionj1());
+            remove(jm.getPuntuacionj2());
+            remove(jm);
+
+            removeKeyListener(jm.getKeyListeners()[0]);
+            removeKeyListener(jm.getKeyListeners()[1]);
+        }
+        inicio.getBtn_inicio().doClick();
+    }
+
+    private void iniciarJuego() {
+        j = new Juego(op, p, this);
+        j.setVisible(true);
+        add(j);
+        add(j.getPuntuacion());
+        add(j.getEtiqueta());
+        add(j.agregarEtiquetaDeVida());
+        add(j.agregarEtiquetaDeCantidad());
+        addKeyListener(j.getKeyListeners()[0]);
+    }
+
+    private void iniciarJuegoMultijugador() {
+        jm = new JuegoMulti(op, this);
+        jm.setVisible(true);
+
+        add(jm);
+        add(jm.getEtiquetaj1());
+        add(jm.getEtiquetaj2());
+        add(jm.getPuntuacionj1());
+        add(jm.getPuntuacionj2());
+
+        addKeyListener(jm.getKeyListeners()[0]);
+        addKeyListener(jm.getKeyListeners()[1]);
     }
 }

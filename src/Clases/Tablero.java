@@ -32,10 +32,10 @@ public class Tablero {
 
     public Tablero(ArrayList<ImageIcon> img, int[][] tableroBase) {
         this.img = img;
-        comidaNormal = img.get(0);
-        comidaEspecial = img.get(1);
+        comidaNormal = img.get(1);
+        comidaEspecial = img.get(3);
         comidaBonus = img.get(2);
-        suelo = img.get(3);
+        suelo = img.get(0);
         muro = img.get(4);
         generarTablero(tableroBase);
         elTablero = generarTablero(tableroBase);
@@ -80,13 +80,13 @@ public class Tablero {
                         elTablero[i][j] = new Muro(muros);
                     }
                 } else if (t[i][j] == 7) {
-                    elTablero[i][j] = new Comida_Normal(img.get(0));
+                    elTablero[i][j] = new Comida_Normal(comidaNormal);
                 } else if (t[i][j] == 8) {
                     elTablero[i][j] = new Portal(suelo);
                 } else if (t[i][j] == 9) {
-                    elTablero[i][j] = new Comida_Especial(img.get(1));
+                    elTablero[i][j] = new Comida_Especial(comidaEspecial);
                 } else if (t[i][j] == 6) {
-                    elTablero[i][j] = new Comida_Bonus(img.get(2));
+                    elTablero[i][j] = new Comida_Bonus(comidaBonus, suelo);
                 } else {
                     elTablero[i][j] = null;
                 }
@@ -95,40 +95,7 @@ public class Tablero {
 
         return elTablero;
     }
-
-//    private int[][] generarBaseTablero() {
-//        int[][] t = { 
-//                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
-//                { 0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
-//                { 0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
-//                { 0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
-//                { 0, 1, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 7, 7, 7, 7, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 0},
-//                { 0, 1, 1, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 9, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 9, 1, 0},
-//                { 1, 1, 1, 1, 1, 1, 7, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 7, 1, 1, 1, 1, 1},
-//                { 1, 1, 1, 1, 1, 1, 7, 1, 0, 1, 1, 1, 1, 1, 1, 0, 7, 7, 7, 1, 1, 1, 1, 1},
-//                { 8, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 7, 0, 0, 0, 0, 8},
-//                { 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 7, 1, 1, 1, 1, 1},
-//                { 0, 1, 9, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 9, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 1, 1, 0},
-//                { 0, 1, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 1, 7, 1, 1, 7, 1, 7, 7, 7, 7, 7, 7, 7, 7, 1, 7, 1, 1, 7, 1, 1, 0},
-//                { 0, 1, 7, 7, 7, 7, 7, 1, 7, 1, 1, 1, 1, 1, 1, 7, 7, 7, 7, 7, 7, 7, 1, 0},
-//                { 0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
-//                { 0, 1, 7, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 7, 1, 0},
-//                { 0, 1, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 1, 0},
-//                { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0} };
-//        System.out.println(t.length +" "+ t[0].length);
-//        return t;
-//    }
+    
     public static ObjetoDeJuego[][] getElTablero() {
         return elTablero;
     }
@@ -159,6 +126,18 @@ public class Tablero {
                 }
             }
         }
+    }
+    
+    public boolean  hayComnidaBonus() {
+        for (int i = 0; i < elTablero.length; i++) {
+            for (int j = 0; j < elTablero[i].length; j++) {
+                if (elTablero[i][j] instanceof Comida_Bonus) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
     }
 
 }
