@@ -108,7 +108,7 @@ public class JuegoMulti extends JPanel {
                         comerJ2();
                     }
                     if (!tab.hayComida()) {
-                        if (nivel < 3) {
+                        if (nivel < 1) {
                             avanzarNivel();
                         } else {
                             declararGanador();
@@ -128,8 +128,12 @@ public class JuegoMulti extends JPanel {
                     repaint();
                 } else if (estado == TERMINADO) {
                     quitarAcciones();
-                    terminarJuego();
-                    timer.stop();
+                    if (contadorDeSalida == 35) {
+                        terminarJuego();
+                        timer.stop();
+                    } else {
+                        contadorDeSalida++;
+                    }
                 } else if (estado == NO_INICIADO) {
                     activarJuego();
                     repaint();
@@ -193,12 +197,13 @@ public class JuegoMulti extends JPanel {
     }
 
     private void terminarJuego() {
-        if (contadorDeSalida == 35) {
+        if (contadorDeSalida == 75) {
             hilo.stop();
             audioDeFondo.stop();
             padre.salirDelJuego();
-        }else{
+        } else {
             contadorDeSalida++;
+            terminarJuego();
         }
     }
 
@@ -267,6 +272,7 @@ public class JuegoMulti extends JPanel {
     }
 
     private void instanciarVariablesJuego(Opciones op) {
+        contadorDeSalida = 0;
         nivel = 1;
         nivel1 = getNivel1();
         ArrayList<ImageIcon> img = op.getApariencia();
@@ -333,7 +339,6 @@ public class JuegoMulti extends JPanel {
         timer.removeActionListener(p);
         timer.removeActionListener(p2);
     }
-
 
     public int[][] getNivel1() {
         int[][] t = {
