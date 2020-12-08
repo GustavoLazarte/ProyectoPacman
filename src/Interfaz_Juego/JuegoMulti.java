@@ -312,16 +312,16 @@ public class JuegoMulti extends JPanel {
         etiquetaj1.setForeground(colorDeFondo.YELLOW);
         etiquetaj1.setVisible(true);
 
-        p.getPuntuacion().setBounds(140, 10, 120, 20);
+        p.getPuntuacion().setBounds(180, 10, 120, 20);
         p.getPuntuacion().setFont(fuente);
         p.getPuntuacion().setForeground(colorDeFondo.WHITE);
         p.getPuntuacion().setVisible(true);
         etiquetaj2 = new JLabel("ScoreJ2");
-        etiquetaj2.setBounds(210, 10, 120, 20);
+        etiquetaj2.setBounds(250, 10, 120, 20);
         etiquetaj2.setFont(fuente);
         etiquetaj2.setForeground(colorDeFondo.YELLOW);
         etiquetaj2.setVisible(true);
-        p2.getPuntuacion().setBounds(340, 10, 120, 20);
+        p2.getPuntuacion().setBounds(420, 10, 120, 20);
         p2.getPuntuacion().setFont(fuente);
         p2.getPuntuacion().setForeground(colorDeFondo.WHITE);
         p2.getPuntuacion().setVisible(true);
