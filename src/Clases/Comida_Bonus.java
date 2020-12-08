@@ -43,7 +43,7 @@ public class Comida_Bonus extends Comida {
     }
     
     public void aparecer(){
-        aparecer = !aparecer;
+        aparecer = true;
     }
     
     @Override
